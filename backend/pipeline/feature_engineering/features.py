@@ -156,12 +156,19 @@ def compute_recency_weights(days_since_last_run: float, seq_len: int = 7) -> np.
     Produces a (seq_len,) weight vector fed into FormDecayFFN.
     Horses that ran recently get weights closer to 1.0.
     Horses that haven't run in 60+ days get low weights (ring rust).
+
+    Example:
+        7  days → max weight ~0.79  (fresh, sharp)
+        21 days → max weight ~0.50  (normal gap)
+        60 days → max weight ~0.14  (ring rust)
     """
-    base_decay = math.exp(-days_since_last_run / 30.0)   # exponential decay
-    # Shape across sequence positions (more recent tokens → higher weight)
+    base_decay = math.exp(-days_since_last_run / 30.0)   # exponential decay on days
+    # Shape across sequence positions (more recent positions → higher weight)
     positions  = np.arange(seq_len)
-    weights    = base_decay * np.exp(-0.1 * (seq_len - 1 - positions))
-    weights    = weights / (weights.max() + 1e-8)          # normalise to [0,1]
+    pos_decay  = np.exp(-0.1 * (seq_len - 1 - positions))  # positional ramp 0 -> 1
+    # Multiply: base_decay sets the ceiling, pos_decay shapes within-sequence ramp
+    # Do NOT normalise — that would erase the between-horse difference
+    weights    = base_decay * pos_decay
     return weights.astype(np.float32)
 
 
