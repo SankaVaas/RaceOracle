@@ -1,0 +1,31 @@
+# ── API ────────────────────────────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.7.0
+python-dotenv>=1.0.0
+httpx>=0.27.0
+
+# ── ML core ────────────────────────────────────────────────────────────────
+# No hard version pins — lets pip choose pre-built wheels for your OS/Python
+numpy>=1.26.0
+pandas>=2.0.0
+scikit-learn>=1.4.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+torch>=2.1.0
+shap>=0.44.0
+joblib>=1.3.0
+
+# ── Data pipeline ──────────────────────────────────────────────────────────
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+feedparser>=6.0.0
+aiohttp>=3.9.0
+
+# ── Anthropic (news summariser) ────────────────────────────────────────────
+anthropic>=0.28.0
+
+# ── Utilities ──────────────────────────────────────────────────────────────
+loguru>=0.7.0
+tqdm>=4.66.0
+pytest>=8.0.0
