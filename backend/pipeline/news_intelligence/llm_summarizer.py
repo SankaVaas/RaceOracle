@@ -13,7 +13,8 @@ Outputs:
 """
 
 import json
-import anthropic
+import os
+from groq import Groq
 from backend.utils.config import config
 from backend.utils.cache import cache_get, cache_set
 from backend.utils.logger import logger
@@ -85,23 +86,24 @@ def summarise_horse_news(horse_name: str, articles_text: str,
             logger.info(f"LLM cache hit for {horse_name}")
             return cached
 
-    if not config.ANTHROPIC_API_KEY:
-        logger.warning("ANTHROPIC_API_KEY not set — returning neutral risk scores")
+    if not config.GROQ_API_KEY:
+        logger.warning("GROQ_API_KEY not set — returning neutral risk scores")
         return _neutral_result(horse_name, reason="No API key configured")
 
     try:
-        client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
-        message = client.messages.create(
-            model="claude-sonnet-4-6",
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"),
+)
+
+        message = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
             max_tokens=1000,
-            system=SYSTEM_PROMPT,
-            messages=[{
-                "role": "user",
-                "content": build_user_prompt(horse_name, race_info, articles_text)
-            }]
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user",   "content": build_user_prompt(horse_name, race_info, articles_text)}
+            ]
         )
 
-        raw = message.content[0].text.strip()
+        raw = message.choices[0].message.content.strip()
 
         # Strip markdown fences if present
         if raw.startswith("```"):
