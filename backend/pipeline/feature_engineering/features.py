@@ -165,7 +165,7 @@ def compute_recency_weights(days_since_last_run: float, seq_len: int = 7) -> np.
     base_decay = math.exp(-days_since_last_run / 30.0)   # exponential decay on days
     # Shape across sequence positions (more recent positions → higher weight)
     positions  = np.arange(seq_len)
-    pos_decay  = np.exp(-0.1 * (seq_len - 1 - positions))  # positional ramp 0 -> 1
+    pos_decay  = np.exp(-0.1 * (seq_len - 1 - positions))  # positional ramp 0→1
     # Multiply: base_decay sets the ceiling, pos_decay shapes within-sequence ramp
     # Do NOT normalise — that would erase the between-horse difference
     weights    = base_decay * pos_decay
@@ -261,7 +261,7 @@ def build_horse_features(raw: dict, race_context: dict,
         TRACK_MAP.get(race_context["track"], 0),
         GOING_MAP.get(race_context["going"], 1),
         SURFACE_MAP.get(race_context["surface"], 0),
-        int(np.clip(raw.get("draw", 1), 1, 20)),
+        0,  # draw_position — always 0 (unknown/not in dataset; cardinality=1)
         class_change + 2,         # shift to 0-4 range for embedding
         int(np.clip(raw.get("age", 4), 2, 10)) - 2,   # 0-8 range
     ]
