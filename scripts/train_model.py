@@ -234,7 +234,7 @@ def train_phase2(model, train_loader, val_loader, val_tensors, df_val,
     loss_fn = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     params  = [p for p in model.parameters() if p.requires_grad] + list(head.parameters())
     optim_  = optim.AdamW(params, lr=2e-4, weight_decay=1e-3)
-    sched   = optim.lr_scheduler.ReduceLROnPlateau(optim_, patience=3, factor=0.5, verbose=False)
+    sched   = optim.lr_scheduler.ReduceLROnPlateau(optim_, patience=3, factor=0.5)
 
     X_cat_v, X_cont_v, _, rw_v, _ = val_tensors
     best_val, best_tpa, patience_count = float("inf"), 0.0, 0
