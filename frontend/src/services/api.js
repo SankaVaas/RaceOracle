@@ -1,3 +1,4 @@
+// Use relative path so Vite proxy forwards to FastAPI on port 8000
 const BASE = "/api/v1";
 
 async function request(method, path, body = null) {
