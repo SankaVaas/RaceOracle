@@ -1,0 +1,10 @@
+.sidebar { width:240px; background:var(--bg2); border-right:1px solid var(--border); padding:16px 0; flex-shrink:0; }
+.sectionLabel { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; padding:8px 16px 4px; }
+.card { padding:10px 16px; cursor:pointer; border-left:2px solid transparent; transition:all 0.15s; }
+.card:hover { background:var(--bg3); }
+.card.active { background:rgba(124,111,247,0.08); border-left-color:var(--purple); }
+.cardName { font-size:13px; font-weight:500; }
+.cardMeta { font-size:11px; color:var(--text2); margin-top:2px; }
+.cardBadge { font-size:10px; padding:2px 7px; border-radius:10px; background:rgba(124,111,247,0.15); color:var(--purple); display:inline-block; margin-top:5px; }
+.hint { padding:20px 16px 0; font-size:11px; color:var(--text3); line-height:1.6; }
+.hint code { color:var(--purple); font-size:10px; }
