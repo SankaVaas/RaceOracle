@@ -1,0 +1,6 @@
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px; }
+.label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+.value { font-size:22px; font-weight:700; line-height:1.1; color:var(--text); }
+.sub { font-size:11px; color:var(--text3); margin-top:4px; }
+@media(max-width:900px){ .grid{ grid-template-columns:repeat(2,1fr); } }

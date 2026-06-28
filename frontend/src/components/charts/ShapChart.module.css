@@ -1,0 +1,6 @@
+.title { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px; }
+.row { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.label { font-size:11px; color:var(--text2); width:130px; flex-shrink:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track { flex:1; height:4px; background:var(--bg3); border-radius:2px; overflow:hidden; }
+.fill { height:100%; border-radius:2px; }
+.val { font-size:10px; color:var(--text2); width:36px; text-align:right; flex-shrink:0; }
