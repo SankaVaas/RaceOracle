@@ -11,7 +11,7 @@ Endpoints:
 
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from backend.api.schemas import (
-    PredictRequest, PredictResponse, NewsRequest, NewsIntelResponse,
+    PredictRequest, PredictResponse, NewsRequest, NewsIntelResponse, ArticleItem,
     HealthResponse, HorsePrediction, RiskFlag, ShapEntry, ModalWeights
 )
 from backend.model.inference.predictor import RacePredictor
@@ -177,6 +177,15 @@ def get_news_intel(req: NewsRequest):
             positive_signals = intel.get("positive_signals", []),
             overall_risk     = display["overall_risk"],
             sentiment_label  = display["sentiment_label"],
+            articles         = [
+                ArticleItem(
+                    title     = a.get("title", ""),
+                    source    = a.get("source", ""),
+                    published = a.get("published", ""),
+                    summary   = a.get("summary", ""),
+                    url       = a.get("url", ""),
+                ) for a in articles
+            ],
         )
     except Exception as e:
         logger.error(f"News intelligence error for {req.horse_name}: {e}")

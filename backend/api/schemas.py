@@ -111,6 +111,14 @@ class PredictResponse(BaseModel):
     horses:             list[HorsePrediction]
 
 
+class ArticleItem(BaseModel):
+    title:      str
+    source:     str
+    published:  str
+    summary:    str             = ""
+    url:        str             = ""
+
+
 class NewsIntelResponse(BaseModel):
     horse_name:         str
     summary:            str
@@ -123,6 +131,7 @@ class NewsIntelResponse(BaseModel):
     positive_signals:   list[str]
     overall_risk:       float
     sentiment_label:    str
+    articles:           list[ArticleItem] = []
 
 
 class HealthResponse(BaseModel):
