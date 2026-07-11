@@ -61,3 +61,8 @@ raceoracle/
 Copy `.env.example` to `.env` and fill in:
 - `ANTHROPIC_API_KEY` — for news intelligence summarization
 - `NEWS_API_KEY` — for article fetching (newsapi.org free tier)
+
+## Results
+
+### Front page
+![alt text](image.png)
