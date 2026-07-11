@@ -7,7 +7,7 @@ import time
 import torch
 import numpy as np
 from typing import Optional
-
+import logging
 from backend.model.training.fusion_model import RaceOracleModel
 import json
 from backend.model.training.model_config import NUM_CONTINUOUS, TAB_D_MODEL, FUSED_DIM
@@ -80,7 +80,9 @@ class RacePredictor:
         t0 = time.time()
 
         horse_features = build_race_features(horses_raw, race_context)
-
+        logger.info(f"Built features for {len(horse_features)} horses in race {race_id}")
+        logger.debug(f"Race features: {horse_features}")
+        
         if not self.encoder.is_fitted:
             logger.warning("Scaler not found — fitting on current race (dev mode).")
             self.encoder.fit(horse_features)
