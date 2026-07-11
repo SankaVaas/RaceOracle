@@ -12,125 +12,196 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --black:#080810; --dark1:#0D0D1A; --dark2:#12121F; --dark3:#1A1A2E;
-  --gold:#C9A84C; --gold2:#E8C96A; --gold3:#F5E0A0; --goldDim:#7A6330;
-  --crimson:#8B1A2E; --crimson2:#C02040;
-  --emerald:#1A6B3C; --emerald2:#27A85F;
-  --text:#F0EAD6; --text2:#A89870; --text3:#6B6050;
-  --border:rgba(201,168,76,0.2); --borderH:rgba(201,168,76,0.5);
+  --bg:       #FAFAF8;
+  --bg2:      #FFFFFF;
+  --bg3:      #F5F3EE;
+  --bg4:      #EDE9E0;
+  --gold:     #B8860B;
+  --gold2:    #C9A84C;
+  --gold3:    #E8C96A;
+  --goldLight:#FFF8E7;
+  --crimson:  #8B1A2E;
+  --crimson2: #C02040;
+  --crimsonLight:#FFF0F2;
+  --emerald:  #1A6B3C;
+  --emerald2: #27A85F;
+  --emeraldLight:#F0FFF6;
+  --text:     #1A1612;
+  --text2:    #5C4F3A;
+  --text3:    #9C8B70;
+  --border:   #E8E0D0;
+  --borderH:  #C9A84C;
+  --shadow:   0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadowHov:0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--black);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 60%),
-             radial-gradient(ellipse 60% 30% at 80% 100%,rgba(139,26,46,0.08) 0%,transparent 50%);}
+body{
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  background-image:url('./src/images/horses.webp');
+  background-size:cover;
+  background-position:center 35%;
+  background-repeat:no-repeat;
+  color:var(--text);
+}
 
-.topbar{position:sticky;top:0;z-index:100;background:rgba(8,8,16,0.96);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:74px;backdrop-filter:blur(14px);}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(250,250,248,0.82) 0%,
+    rgba(250,250,248,0.65) 40%,
+    rgba(250,250,248,0.82) 100%);
+}
+
+/* Racing stripe */
+@keyframes stripeMove{from{background-position:0 0}to{background-position:80px 0}}
+.racing-stripe{
+  height:3px;position:relative;z-index:10;
+  background:repeating-linear-gradient(90deg,
+    var(--gold) 0,var(--gold) 20px,transparent 20px,transparent 40px,
+    var(--crimson2) 40px,var(--crimson2) 60px,transparent 60px,transparent 80px);
+  animation:stripeMove 1.2s linear infinite;
+}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.92);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;display:flex;align-items:center;justify-content:space-between;
+  height:72px;backdrop-filter:blur(16px);
+  box-shadow:0 1px 12px rgba(0,0,0,0.06);
+}
 .logo-wrap{display:flex;align-items:center;gap:16px;}
-.logo-mark{width:54px;height:54px;flex-shrink:0;}
-.logo-text{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:0.5px;color:var(--gold2);}
+.logo-mark{width:52px;height:52px;flex-shrink:0;}
+.logo-text{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;letter-spacing:0.3px;color:var(--gold);}
 .logo-text span{color:var(--crimson2);}
 .logo-tagline{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3);margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:14px;}
-.status-pill{display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;color:var(--text2);background:rgba(201,168,76,0.04);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.status-pill{display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;color:var(--text2);background:var(--bg3);}
 .sdot{width:7px;height:7px;border-radius:50%;}
-.btn-gold{padding:10px 24px;border-radius:7px;background:linear-gradient(135deg,var(--gold) 0%,var(--goldDim) 100%);color:var(--black);font-weight:600;font-size:13px;border:none;cursor:pointer;letter-spacing:0.03em;font-family:'Inter',sans-serif;}
+.btn-gold{padding:10px 22px;border-radius:7px;background:linear-gradient(135deg,var(--gold2) 0%,var(--gold) 100%);color:#fff;font-weight:600;font-size:13px;border:none;cursor:pointer;letter-spacing:0.02em;font-family:'Inter',sans-serif;box-shadow:0 2px 8px rgba(184,134,11,0.25);}
+.btn-gold:hover:not(:disabled){background:linear-gradient(135deg,var(--gold3) 0%,var(--gold2) 100%);box-shadow:0 4px 16px rgba(184,134,11,0.3);}
 .btn-gold:disabled{opacity:0.5;cursor:not-allowed;}
-.btn-ghost{padding:10px 16px;border-radius:7px;background:transparent;color:var(--text2);border:1px solid var(--border);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-ghost{padding:10px 16px;border-radius:7px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-ghost:hover{background:var(--bg4);color:var(--text);}
 
-.layout{display:flex;position:relative;z-index:1;min-height:calc(100vh - 74px);}
-.sidebar{width:262px;flex-shrink:0;background:rgba(13,13,26,0.85);border-right:1px solid var(--border);padding:24px 0;}
-.s-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goldDim);padding:0 20px 10px;font-weight:500;}
-.race-item{padding:13px 20px;cursor:pointer;border-left:2px solid transparent;}
-.race-item.active{background:rgba(201,168,76,0.08);border-left-color:var(--gold);}
-.ri-name{font-family:'Playfair Display',serif;font-size:14px;color:var(--text);margin-bottom:3px;}
+/* Layout */
+.layout{display:flex;position:relative;z-index:1;min-height:calc(100vh - 72px);}
+
+/* Sidebar */
+.sidebar{width:262px;flex-shrink:0;background:rgba(255,255,255,0.85);border-right:1px solid var(--border);padding:24px 0;backdrop-filter:blur(8px);}
+.s-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);padding:0 20px 10px;font-weight:600;}
+.race-item{padding:12px 20px;cursor:pointer;border-left:2px solid transparent;transition:all 0.15s;}
+.race-item:hover{background:var(--goldLight);border-left-color:var(--gold3);}
+.race-item.active{background:var(--goldLight);border-left-color:var(--gold2);}
+.ri-name{font-family:'Playfair Display',serif;font-size:14px;color:var(--text);margin-bottom:3px;font-weight:600;}
 .ri-meta{font-size:11px;color:var(--text3);}
-.ri-badge{display:inline-block;margin-top:6px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:rgba(201,168,76,0.1);color:var(--gold2);border:1px solid rgba(201,168,76,0.2);}
-.divider{height:1px;margin:20px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
-.s-hint{padding:14px 20px;font-size:11px;color:var(--text3);line-height:1.7;}
-.s-hint code{color:var(--gold2);font-size:10px;}
+.ri-badge{display:inline-block;margin-top:6px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--goldLight);color:var(--gold);border:1px solid #E8D49A;font-weight:600;}
+.divider{height:1px;margin:16px 20px;background:var(--border);}
+.s-hint{padding:12px 20px;font-size:11px;color:var(--text3);line-height:1.7;}
+.s-hint code{color:var(--gold);font-size:10px;font-weight:600;}
 
-.main{flex:1;padding:32px 38px;overflow-y:auto;}
-.sec-lbl{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goldDim);margin-bottom:14px;font-weight:500;}
+/* Main */
+.main{flex:1;padding:28px 36px;overflow-y:auto;}
+.sec-lbl{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:600;}
 
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px;}
-.metric{background:rgba(13,13,26,0.9);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;overflow:hidden;}
-.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--crimson2));opacity:0.5;}
-.m-lbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
-.m-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;color:var(--gold2);}
-.m-val.sm{font-size:16px;padding-top:5px;line-height:1.35;}
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.metric{
+  background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow 0.2s,transform 0.2s;
+}
+.metric:hover{box-shadow:var(--shadowHov);transform:translateY(-1px);}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold2),var(--crimson2));opacity:0.7;}
+.m-lbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-weight:500;}
+.m-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;color:var(--gold);}
+.m-val.sm{font-size:15px;padding-top:4px;line-height:1.35;color:var(--text);}
+.m-val.green{color:var(--emerald);}
 .m-sub{font-size:11px;color:var(--text3);margin-top:6px;}
 
-.horses{display:flex;flex-direction:column;gap:12px;margin-bottom:30px;}
-.hcard{background:rgba(13,13,26,0.9);border:1px solid var(--border);border-radius:11px;padding:20px 24px;cursor:pointer;position:relative;overflow:hidden;}
-.hcard.exp{border-color:var(--gold);}
-.hcard.tp{border-color:rgba(201,168,76,0.45);background:rgba(201,168,76,0.025);}
-.tp-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold),var(--crimson2));}
-.tp-lbl{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;}
-.hdr{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.hnum{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border:1px solid var(--border);color:var(--text2);background:rgba(255,255,255,0.03);}
-.hnum.g{background:rgba(201,168,76,0.12);border-color:var(--gold);color:var(--gold2);}
-.hname{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);letter-spacing:0.02em;}
+/* Horse cards */
+.horses{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.hcard{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:18px 22px;cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow 0.2s;
+}
+.hcard.exp{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(201,168,76,0.1),var(--shadow);}
+.hcard.tp{border-color:#E8D49A;background:var(--goldLight);}
+.tp-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--gold2),var(--crimson2));border-radius:0;}
+.tp-lbl{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.hdr{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.hnum{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border:1.5px solid var(--border);color:var(--text3);background:var(--bg3);}
+.hnum.g{background:var(--goldLight);border-color:var(--gold3);color:var(--gold);}
+.hname{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
 .hmeta{font-size:12px;color:var(--text3);margin-top:2px;}
 .badges{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
-.badge{font-size:10px;padding:4px 10px;border-radius:4px;font-weight:500;letter-spacing:0.05em;border:1px solid;white-space:nowrap;}
-.bg{background:rgba(201,168,76,0.1);color:var(--gold2);border-color:rgba(201,168,76,0.3);}
-.br{background:rgba(192,32,64,0.1);color:#F47090;border-color:rgba(192,32,64,0.3);}
-.ba{background:rgba(192,120,32,0.1);color:#E8A040;border-color:rgba(192,120,32,0.3);}
-.bk{background:rgba(255,255,255,0.04);color:var(--text3);border-color:var(--border);}
+.badge{font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:0.04em;border:1px solid;white-space:nowrap;}
+.bg{background:var(--goldLight);color:var(--gold);border-color:#E8D49A;}
+.br{background:var(--crimsonLight);color:var(--crimson2);border-color:#FFCCD5;}
+.ba{background:#FFF8F0;color:#B05A00;border-color:#FFD9B3;}
+.bk{background:var(--bg3);color:var(--text3);border-color:var(--border);}
 
-.prow{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.plbl{font-size:11px;color:var(--text3);width:50px;flex-shrink:0;}
-.ptrack{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+/* Prob bars */
+.prow{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.plbl{font-size:11px;color:var(--text3);width:50px;flex-shrink:0;font-weight:500;}
+.ptrack{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
 .pfill{height:100%;border-radius:3px;}
-.ppct{font-size:12px;font-weight:600;width:42px;text-align:right;flex-shrink:0;}
+.ppct{font-size:12px;font-weight:700;width:42px;text-align:right;flex-shrink:0;}
 
-.det{margin-top:18px;padding-top:18px;border-top:1px solid rgba(201,168,76,0.12);display:grid;grid-template-columns:1fr 1fr;gap:24px;overflow:hidden;}
-.dtitle{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goldDim);margin-bottom:10px;font-weight:500;}
+/* Expanded details */
+.det{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:20px;overflow:hidden;}
+.dtitle{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600;}
 .srow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .slbl{font-size:11px;color:var(--text2);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.strack{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.strack{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
 .sfill{height:100%;border-radius:2px;}
-.sval{font-size:10px;width:36px;text-align:right;font-weight:500;}
+.sval{font-size:10px;width:36px;text-align:right;font-weight:600;}
 .mws{display:flex;gap:8px;margin-top:8px;}
-.mw{flex:1;border-radius:7px;padding:10px;text-align:center;border:1px solid var(--border);background:rgba(201,168,76,0.04);}
-.mwv{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold2);}
-.mwl{font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase;}
-.nitem{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px;}
+.mw{flex:1;border-radius:8px;padding:10px;text-align:center;border:1px solid var(--border);background:var(--bg3);}
+.mwv{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);}
+.mwl{font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;}
+.nitem{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;}
 .ndot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
 .ntxt{font-size:12px;color:var(--text2);line-height:1.6;}
-.hhint{font-size:11px;color:var(--text3);margin-top:10px;}
+.hhint{font-size:11px;color:var(--text3);margin-top:9px;}
 
-/* News evidence panel */
-.news-evidence-btn{margin-top:12px;width:100%;padding:9px 14px;border-radius:7px;background:rgba(201,168,76,0.06);border:1px dashed var(--border);color:var(--gold2);font-size:11px;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
-.news-evidence-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--borderH);}
-.news-panel{margin-top:12px;background:rgba(8,8,16,0.6);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
-.news-panel-title{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goldDim);margin-bottom:10px;font-weight:500;display:flex;align-items:center;gap:6px;}
-.article-item{padding:9px 0;border-bottom:1px solid rgba(201,168,76,0.08);}
+/* News panel */
+.news-evidence-btn{margin-top:12px;width:100%;padding:9px 14px;border-radius:8px;background:var(--bg3);border:1px dashed var(--border);color:var(--gold);font-size:11px;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;transition:all 0.15s;}
+.news-evidence-btn:hover{background:var(--goldLight);border-color:var(--gold3);}
+.news-panel{margin-top:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.news-panel-title{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600;}
+.article-item{padding:9px 0;border-bottom:1px solid var(--border);}
 .article-item:last-child{border-bottom:none;}
-.article-source{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold2);font-weight:600;}
+.article-source{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);font-weight:700;}
 .article-date{font-size:9px;color:var(--text3);margin-left:6px;}
 .article-title{font-size:12px;color:var(--text);margin-top:3px;line-height:1.45;font-weight:500;}
 .article-summary{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
 .article-empty{font-size:11px;color:var(--text3);text-align:center;padding:10px 0;}
-.news-loading{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);padding:8px 0;}
-.news-loading-ring{width:12px;height:12px;border-radius:50%;border:2px solid rgba(201,168,76,0.15);border-top-color:var(--gold);}
+.news-loading{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);padding:6px 0;}
+.news-loading-ring{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--gold);}
 
-.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.panel{background:rgba(13,13,26,0.9);border:1px solid var(--border);border-radius:10px;padding:20px 24px;}
-.ptitle{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goldDim);margin-bottom:16px;font-weight:500;}
-.arow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(201,168,76,0.07);font-size:13px;color:var(--text2);}
+/* Bottom panels */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);}
+.ptitle{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:600;}
+.arow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);}
 .arow:last-child{border-bottom:none;}
 .frow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .fname{font-size:12px;color:var(--text2);width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ftrack{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
-.ffill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--crimson2));}
-.fpct{font-size:12px;font-weight:600;color:var(--gold2);width:38px;text-align:right;}
+.ftrack{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.ffill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold2),var(--crimson2));}
+.fpct{font-size:12px;font-weight:700;color:var(--gold);width:38px;text-align:right;}
 
+/* Loading */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:20px;}
-.lring{width:56px;height:56px;border-radius:50%;border:3px solid rgba(201,168,76,0.1);border-top-color:var(--gold);}
-.ltxt{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold2);}
-.ebox{border:1px solid rgba(192,32,64,0.3);background:rgba(192,32,64,0.06);border-radius:8px;padding:14px 18px;font-size:13px;color:#F47090;margin-bottom:24px;}
+.lring{width:48px;height:48px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--gold);}
+.ltxt{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);}
+.ebox{border:1px solid #FFCCD5;background:var(--crimsonLight);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--crimson2);margin-bottom:22px;}
 
 @media(max-width:1100px){.metrics{grid-template-columns:repeat(2,1fr)}.panels{grid-template-columns:1fr}}
 @media(max-width:800px){.sidebar{display:none}.det{grid-template-columns:1fr}}
@@ -140,7 +211,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <div id="root"></div>
 <script type="text/babel">
 const {useState,useEffect,useCallback}=React;
-const {motion,AnimatePresence}=window.Motion ?? window.framerMotion;
+const {motion,AnimatePresence}=window.Motion??window.framerMotion;
 const BASE="http://localhost:8000/api/v1";
 
 async function apiFetch(path,method="GET",body=null){
@@ -149,114 +220,29 @@ async function apiFetch(path,method="GET",body=null){
   return res.json();
 }
 
-/* ── Proper horse-racing crest logo ──────────────────────────────────────
-   A clean, recognizable galloping horse silhouette (classic turf-club
-   style) with independently animated legs and mane for a real gallop. */
-function HorseLogo(){
+function HorseLogo() {
   return (
-    <motion.div
-      className="logo-mark"
-      animate={{ y: [0, -3, 0, -2, 0] }}
-      transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-    >
+    <div style={{width:48,height:48,flexShrink:0}}>
       <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="horseGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#E8C96A"/>
-            <stop offset="100%" stopColor="#C9A84C"/>
+          <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#C9A84C"/>
+            <stop offset="100%" stopColor="#B8860B"/>
           </linearGradient>
         </defs>
-
-        {/* Body */}
-        <path fill="url(#horseGrad)" d="
-          M28 58
-          C24 52 26 44 33 41
-          C40 38 50 39 56 44
-          L62 38
-          C58 30 60 20 68 15
-          C74 11 82 12 86 17
-          C89 21 88 26 84 29
-          L88 33
-          C92 31 96 33 97 37
-          C98 41 95 45 91 45
-          L86 50
-          C84 56 78 60 71 59
-          L65 64
-          C68 70 65 76 59 78
-          C54 80 49 77 48 72
-          L40 76
-          C38 81 32 83 27 80
-          C24 78 23 74 25 71
-          L20 68
-          C16 70 12 68 11 64
-          C10 60 13 56 17 56
-          Z
-        "/>
-
-        {/* Mane - animated flow */}
-        <motion.path fill="#F5E0A0" opacity="0.9"
-          animate={{
-            d: [
-              "M70 16 Q78 10 82 16 Q76 17 72 22 Q68 18 70 16Z",
-              "M70 14 Q80 9 84 15 Q76 16 71 21 Q67 17 70 14Z",
-              "M70 16 Q78 10 82 16 Q76 17 72 22 Q68 18 70 16Z",
-            ]
-          }}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Front legs - galloping cycle */}
-        <motion.path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none"
-          animate={{ d: [
-            "M58 70 Q54 80 50 90",
-            "M58 70 Q62 78 66 84",
-            "M58 70 Q54 80 50 90",
-          ]}}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none"
-          animate={{ d: [
-            "M48 73 Q44 82 42 92",
-            "M48 73 Q52 80 56 88",
-            "M48 73 Q44 82 42 92",
-          ]}}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.1 }}
-        />
-
-        {/* Back legs - galloping cycle (opposite phase) */}
-        <motion.path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none"
-          animate={{ d: [
-            "M22 67 Q26 76 30 86",
-            "M22 67 Q16 74 12 80",
-            "M22 67 Q26 76 30 86",
-          ]}}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.05 }}
-        />
-        <motion.path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none"
-          animate={{ d: [
-            "M16 64 Q18 74 16 84",
-            "M16 64 Q10 70 6 76",
-            "M16 64 Q18 74 16 84",
-          ]}}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.15 }}
-        />
-
-        {/* Tail - flowing animation */}
-        <motion.path stroke="#E8C96A" strokeWidth="3.5" strokeLinecap="round" fill="none" opacity="0.85"
-          animate={{ d: [
-            "M14 56 Q4 52 2 60 Q3 68 12 66",
-            "M14 56 Q2 58 1 66 Q4 72 13 68",
-            "M14 56 Q4 52 2 60 Q3 68 12 66",
-          ]}}
-          transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Eye */}
-        <circle cx="80" cy="20" r="1.4" fill="#080810"/>
+        <path fill="url(#hg)" d="M28 58 C24 52 26 44 33 41 C40 38 50 39 56 44 L62 38 C58 30 60 20 68 15 C74 11 82 12 86 17 C89 21 88 26 84 29 L88 33 C92 31 96 33 97 37 C98 41 95 45 91 45 L86 50 C84 56 78 60 71 59 L65 64 C68 70 65 76 59 78 C54 80 49 77 48 72 L40 76 C38 81 32 83 27 80 C24 78 23 74 25 71 L20 68 C16 70 12 68 11 64 C10 60 13 56 17 56 Z"/>
+        <path fill="#E8C96A" opacity="0.85" d="M70 16 Q78 10 82 16 Q76 17 72 22 Q68 18 70 16Z"/>
+        <path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none" d="M58 70 Q54 80 50 90"/>
+        <path stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" fill="none" d="M48 73 Q44 82 42 92"/>
+        <path stroke="#B8860B" strokeWidth="4" strokeLinecap="round" fill="none" d="M22 67 Q26 76 30 86"/>
+        <path stroke="#B8860B" strokeWidth="4" strokeLinecap="round" fill="none" d="M16 64 Q18 74 16 84"/>
+        <path stroke="#C9A84C" strokeWidth="3.5" strokeLinecap="round" fill="none" d="M14 56 Q4 52 2 60 Q3 68 12 66"/>
+        <circle cx="80" cy="20" r="1.4" fill="#5C4F3A"/>
       </svg>
-    </motion.div>
+    </div>
   );
 }
+
 
 function ProbBar({label,pct,color,delay=0}){
   return(
@@ -264,8 +250,8 @@ function ProbBar({label,pct,color,delay=0}){
       <span className="plbl">{label}</span>
       <div className="ptrack">
         <motion.div className="pfill" style={{background:color}}
-          initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.9, delay, ease: [0.22,1,0.36,1] }}
+          initial={{width:0}} animate={{width:`${pct}%`}}
+          transition={{duration:0.9,delay,ease:[0.22,1,0.36,1]}}
         />
       </div>
       <motion.span className="ppct" style={{color}}
@@ -285,30 +271,29 @@ function ShapSection({drivers=[],risks=[]}){
         <div className="srow" key={i}>
           <span className="slbl">{d.feature.replace(/_/g," ")}</span>
           <div className="strack">
-            <motion.div className="sfill" style={{background:"linear-gradient(90deg,#1A6B3C,#4ED890)"}}
+            <motion.div className="sfill" style={{background:"linear-gradient(90deg,#27A85F,#52D98A)"}}
               initial={{width:0}} animate={{width:`${(Math.abs(d.impact)/mx)*100}%`}} transition={{duration:0.6,delay:i*0.05}}
             />
           </div>
-          <span className="sval" style={{color:"#4ED890"}}>+{d.impact.toFixed(1)}</span>
+          <span className="sval" style={{color:"var(--emerald2)"}}>+{d.impact.toFixed(1)}</span>
         </div>
       ))}
       {risks.slice(0,3).map((r,i)=>(
         <div className="srow" key={i}>
           <span className="slbl">{r.feature.replace(/_/g," ")}</span>
           <div className="strack">
-            <motion.div className="sfill" style={{background:"linear-gradient(90deg,#8B1A2E,#C02040)"}}
+            <motion.div className="sfill" style={{background:"linear-gradient(90deg,#C02040,#FF6080)"}}
               initial={{width:0}} animate={{width:`${(Math.abs(r.impact)/mx)*100}%`}} transition={{duration:0.6,delay:i*0.05}}
             />
           </div>
-          <span className="sval" style={{color:"#F47090"}}>{r.impact.toFixed(1)}</span>
+          <span className="sval" style={{color:"var(--crimson2)"}}>{r.impact.toFixed(1)}</span>
         </div>
       ))}
     </div>
   );
 }
 
-/* News evidence panel — shows the actual articles behind the risk scores */
-function NewsEvidence({horseName, trainerName}){
+function NewsEvidence({horseName,trainerName}){
   const [open,setOpen]=useState(false);
   const [loading,setLoading]=useState(false);
   const [data,setData]=useState(null);
@@ -316,55 +301,50 @@ function NewsEvidence({horseName, trainerName}){
 
   const fetchEvidence=async(e)=>{
     e.stopPropagation();
-    if(open){ setOpen(false); return; }
+    if(open){setOpen(false);return;}
     setOpen(true);
     if(data) return;
-    setLoading(true); setErr(null);
+    setLoading(true);setErr(null);
     try{
-      const res=await apiFetch("/news","POST",{
-        horse_name: horseName,
-        trainer_name: trainerName||"",
-        race_info: "upcoming race",
-        use_cache: true,
-      });
+      const res=await apiFetch("/news","POST",{horse_name:horseName,trainer_name:trainerName||"",race_info:"upcoming race",use_cache:true});
       setData(res);
-    }catch(ex){ setErr(ex.message); }
-    finally{ setLoading(false); }
+    }catch(ex){setErr(ex.message);}
+    finally{setLoading(false);}
   };
 
-  return (
+  return(
     <div onClick={e=>e.stopPropagation()}>
       <button className="news-evidence-btn" onClick={fetchEvidence}>
-        {open ? "▲ Hide source articles" : "▼ View news evidence & sources"}
+        {open?"▲ Hide source articles":"▼ View news evidence & sources"}
       </button>
       <AnimatePresence>
-        {open && (
+        {open&&(
           <motion.div className="news-panel"
-            initial={{ height:0, opacity:0 }} animate={{ height:"auto", opacity:1 }} exit={{ height:0, opacity:0 }}
-            transition={{ duration:0.25 }}
+            initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}}
+            transition={{duration:0.25}}
           >
             <div className="news-panel-title">📰 Source articles analysed by AI</div>
-            {loading && (
+            {loading&&(
               <div className="news-loading">
                 <motion.div className="news-loading-ring" animate={{rotate:360}} transition={{duration:0.8,repeat:Infinity,ease:"linear"}}/>
                 Fetching and analysing latest news…
               </div>
             )}
-            {err && <div className="article-empty" style={{color:"#F47090"}}>⚠ {err}</div>}
-            {data && data.articles && data.articles.length>0 && data.articles.map((a,i)=>(
+            {err&&<div className="article-empty" style={{color:"var(--crimson2)"}}>⚠ {err}</div>}
+            {data&&data.articles&&data.articles.length>0&&data.articles.map((a,i)=>(
               <div className="article-item" key={i}>
                 <span className="article-source">{a.source}</span>
                 <span className="article-date">{a.published}</span>
                 <div className="article-title">{a.title}</div>
-                {a.summary && <div className="article-summary">{a.summary}</div>}
+                {a.summary&&<div className="article-summary">{a.summary}</div>}
               </div>
             ))}
-            {data && (!data.articles || data.articles.length===0) && (
+            {data&&(!data.articles||data.articles.length===0)&&(
               <div className="article-empty">No recent articles found for this horse.</div>
             )}
-            {data && (
-              <div style={{marginTop:10, paddingTop:10, borderTop:"1px solid rgba(201,168,76,0.08)", fontSize:11, color:"var(--text3)", lineHeight:1.6}}>
-                <strong style={{color:"var(--gold2)"}}>AI summary:</strong> {data.summary}
+            {data&&(
+              <div style={{marginTop:10,paddingTop:10,borderTop:"1px solid var(--border)",fontSize:11,color:"var(--text2)",lineHeight:1.6}}>
+                <strong style={{color:"var(--gold)"}}>AI summary: </strong>{data.summary}
               </div>
             )}
           </motion.div>
@@ -376,23 +356,20 @@ function NewsEvidence({horseName, trainerName}){
 
 function HorseCard({horse,expanded,onToggle,index}){
   const isTop=horse.rank===1;
-  const wc=horse.win_prob>=28?"#4ED890":horse.win_prob>=18?"#E8A040":"#6B6050";
+  const wc=horse.win_prob>=28?"var(--emerald2)":horse.win_prob>=18?"#B05A00":"var(--text3)";
   return(
-    <motion.div
-      className={`hcard ${expanded?"exp":""} ${isTop?"tp":""}`}
-      onClick={onToggle}
+    <motion.div className={`hcard ${expanded?"exp":""} ${isTop?"tp":""}`} onClick={onToggle}
       layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.07, ease: [0.22,1,0.36,1] }}
-      whileHover={{ x: 4, borderColor: "rgba(201,168,76,0.5)" }}
-      whileTap={{ scale: 0.995 }}
+      initial={{opacity:0,y:14}} animate={{opacity:1,y:0}}
+      transition={{duration:0.35,delay:index*0.06,ease:[0.22,1,0.36,1]}}
+      whileHover={{y:-2,boxShadow:"var(--shadowHov)"}}
+      whileTap={{scale:0.998}}
     >
-      {isTop && <div className="tp-bar"/>}
-      {isTop && <div className="tp-lbl">★ AI Top Selection</div>}
+      {isTop&&<div className="tp-bar"/>}
+      {isTop&&<div className="tp-lbl">★ AI Top Selection</div>}
       <div className="hdr">
         <motion.div className={`hnum ${isTop?"g":""}`}
-          initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: index*0.07+0.1, type:"spring", stiffness:300 }}
+          initial={{scale:0}} animate={{scale:1}} transition={{delay:index*0.06+0.1,type:"spring",stiffness:300}}
         >{horse.rank}</motion.div>
         <div style={{flex:1}}>
           <div className="hname">{horse.name}</div>
@@ -408,18 +385,13 @@ function HorseCard({horse,expanded,onToggle,index}){
           <span className="badge bk">{horse.confidence}% conf</span>
         </div>
       </div>
-      <ProbBar label="Win"   pct={horse.win_prob}  color={wc} delay={index*0.07}/>
-      <ProbBar label="Top 2" pct={horse.top2_prob} color="rgba(201,168,76,0.85)" delay={index*0.07+0.1}/>
-      <ProbBar label="Top 3" pct={horse.top3_prob} color="rgba(201,168,76,0.4)"  delay={index*0.07+0.2}/>
-
+      <ProbBar label="Win"   pct={horse.win_prob}  color={wc} delay={index*0.06}/>
+      <ProbBar label="Top 2" pct={horse.top2_prob} color="var(--gold2)"  delay={index*0.06+0.1}/>
+      <ProbBar label="Top 3" pct={horse.top3_prob} color="var(--gold3)"  delay={index*0.06+0.2}/>
       <AnimatePresence>
         {expanded&&(
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22,1,0.36,1] }}
-            style={{ overflow:"hidden" }}
+          <motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}}
+            transition={{duration:0.28,ease:[0.22,1,0.36,1]}} style={{overflow:"hidden"}}
           >
             <div className="det">
               <ShapSection drivers={horse.top_drivers||[]} risks={horse.top_risks||[]}/>
@@ -427,26 +399,24 @@ function HorseCard({horse,expanded,onToggle,index}){
                 <div className="dtitle">Signal trust</div>
                 <div className="mws">
                   {["structured","odds","news"].map((k,i)=>(
-                    <motion.div className="mw" key={k}
-                      initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.06 }}
-                    >
+                    <motion.div className="mw" key={k} initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{delay:i*0.05}}>
                       <div className="mwv">{horse.modal_weights?.[k]??33}%</div>
                       <div className="mwl">{k}</div>
                     </motion.div>
                   ))}
                 </div>
                 {(horse.risk_flags?.length>0||horse.news_summary)&&(
-                  <div style={{marginTop:16}}>
+                  <div style={{marginTop:14}}>
                     <div className="dtitle">Intelligence flags</div>
                     {horse.risk_flags?.map((f,i)=>(
                       <div className="nitem" key={i}>
-                        <div className="ndot" style={{background:f.severity==="critical"?"#C02040":f.severity==="high"?"#E8A040":"#7A6330"}}/>
+                        <div className="ndot" style={{background:f.severity==="critical"?"var(--crimson2)":f.severity==="high"?"#B05A00":"var(--text3)"}}/>
                         <span className="ntxt">{f.label.replace(/[🔴🟡🟠⚪]/g,"").trim()}</span>
                       </div>
                     ))}
                     {horse.news_summary&&(
                       <div className="nitem">
-                        <div className="ndot" style={{background:"#7A6330"}}/>
+                        <div className="ndot" style={{background:"var(--text3)"}}/>
                         <span className="ntxt">{horse.news_summary}</span>
                       </div>
                     )}
@@ -458,7 +428,6 @@ function HorseCard({horse,expanded,onToggle,index}){
           </motion.div>
         )}
       </AnimatePresence>
-
       {!expanded&&<div className="hhint">Click to expand · SHAP analysis · signal trust · news evidence</div>}
     </motion.div>
   );
@@ -466,12 +435,12 @@ function HorseCard({horse,expanded,onToggle,index}){
 
 const RACES=[{id:"demo",label:"Royal Ascot — Race 3",meta:"1m4f · Good to Firm",badge:"Live Demo"}];
 const ACCURACY=[
-  ["Top-pick accuracy","38.6%","#4ED890"],
-  ["Top-2 accuracy","~62%","#4ED890"],
-  ["vs random baseline","3.8×","#E8C96A"],
-  ["Training races","2,706","#A89870"],
-  ["Dataset period","Sep–Dec 2020","#6B6050"],
-  ["Model version","v1-surgical","#6B6050"],
+  ["Top-pick accuracy","38.6%","var(--emerald)"],
+  ["Top-2 accuracy","~62%","var(--emerald)"],
+  ["vs random baseline","3.8×","var(--gold)"],
+  ["Training races","2,706","var(--text2)"],
+  ["Dataset period","Sep–Dec 2020","var(--text3)"],
+  ["Model version","v1-surgical","var(--text3)"],
 ];
 
 function App(){
@@ -498,13 +467,12 @@ function App(){
 
   const horses=race?.horses??[];
   const maxWin=horses.length?Math.max(...horses.map(h=>h.win_prob)):1;
-  const dc=apiStatus==="online"?"#4ED890":apiStatus==="offline"?"#C02040":"#E8A040";
+  const dc=apiStatus==="online"?"var(--emerald2)":apiStatus==="offline"?"var(--crimson2)":"#B05A00";
 
   return(
     <div style={{minHeight:"100vh",position:"relative",zIndex:1}}>
-      <motion.div className="topbar"
-        initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
-      >
+      <div className="racing-stripe"/>
+      <div className="topbar">
         <div className="logo-wrap">
           <HorseLogo/>
           <div>
@@ -515,15 +483,15 @@ function App(){
         <div className="topbar-right">
           <div className="status-pill">
             <motion.span className="sdot" style={{background:dc}}
-              animate={{ opacity:[1,0.4,1], scale:[1,0.8,1] }} transition={{ duration:2, repeat:Infinity }}
+              animate={{opacity:[1,0.4,1],scale:[1,0.8,1]}} transition={{duration:2,repeat:Infinity}}
             />
             API {apiStatus}
           </div>
-          <motion.button className="btn-ghost" onClick={loadDemo} disabled={loading} whileHover={{scale:1.03}} whileTap={{scale:0.97}}>
+          <motion.button className="btn-ghost" onClick={loadDemo} disabled={loading} whileHover={{scale:1.02}} whileTap={{scale:0.98}}>
             ↺ Refresh
           </motion.button>
           <motion.button className="btn-gold" onClick={loadDemo} disabled={loading}
-            whileHover={{ scale:1.03, boxShadow:"0 0 30px rgba(201,168,76,0.35)" }} whileTap={{scale:0.97}}
+            whileHover={{scale:1.02,boxShadow:"0 6px 20px rgba(184,134,11,0.3)"}} whileTap={{scale:0.98}}
           >
             {loading?"Analysing…":"Run Prediction"}
           </motion.button>
@@ -546,7 +514,6 @@ function App(){
 
         <div className="main">
           {error&&<div className="ebox">⚠ {error} — ensure the API is running: uvicorn backend.api.main:app --port 8000</div>}
-
           {loading&&(
             <div className="loading">
               <motion.div className="lring" animate={{rotate:360}} transition={{duration:0.9,repeat:Infinity,ease:"linear"}}/>
@@ -555,24 +522,21 @@ function App(){
               </motion.div>
             </div>
           )}
-
           {!loading&&race&&(
             <>
               <div className="sec-lbl">Race overview</div>
               <motion.div className="metrics" initial="hidden" animate="show"
-                variants={{ hidden:{}, show:{ transition:{ staggerChildren:0.08 } } }}
+                variants={{hidden:{},show:{transition:{staggerChildren:0.08}}}}
               >
                 {[
-                  {l:"Race", v:race.race_name, s:`${race.track} · ${race.going}`, sm:true},
-                  {l:"AI Selection", v:race.top_pick, s:`${race.horses[0]?.win_prob}% win probability`, sm:true, c:"#E8C96A"},
-                  {l:"Model Confidence", v:`${race.model_confidence}%`, s:race.model_version},
-                  {l:"Inference", v:`${race.inference_ms}ms`, s:`${race.field_size} runners analysed`, c:"#27A85F"},
+                  {l:"Race",v:race.race_name,s:`${race.track} · ${race.going}`,sm:true},
+                  {l:"AI Selection",v:race.top_pick,s:`${race.horses[0]?.win_prob}% win probability`,sm:true,c:"var(--gold)"},
+                  {l:"Model Confidence",v:`${race.model_confidence}%`,s:race.model_version},
+                  {l:"Inference",v:`${race.inference_ms}ms`,s:`${race.field_size} runners analysed`,cls:"green"},
                 ].map((m,i)=>(
-                  <motion.div className="metric" key={i}
-                    variants={{ hidden:{opacity:0,y:12}, show:{opacity:1,y:0} }}
-                  >
+                  <motion.div className="metric" key={i} variants={{hidden:{opacity:0,y:12},show:{opacity:1,y:0}}}>
                     <div className="m-lbl">{m.l}</div>
-                    <div className={`m-val ${m.sm?"sm":""}`} style={{color:m.c||"#E8C96A"}}>{m.v}</div>
+                    <div className={`m-val ${m.sm?"sm":""} ${m.cls||""}`} style={{color:m.c||undefined}}>{m.v}</div>
                     <div className="m-sub">{m.s}</div>
                   </motion.div>
                 ))}
@@ -586,13 +550,13 @@ function App(){
               </div>
 
               <div className="sec-lbl">Intelligence dashboard</div>
-              <motion.div className="panels" initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.3}}>
+              <motion.div className="panels" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{delay:0.3}}>
                 <div className="panel">
                   <div className="ptitle">Model performance</div>
                   {ACCURACY.map(([l,v,c])=>(
                     <div className="arow" key={l}>
                       <span>{l}</span>
-                      <span style={{fontWeight:600,color:c}}>{v}</span>
+                      <span style={{fontWeight:700,color:c}}>{v}</span>
                     </div>
                   ))}
                 </div>
