@@ -1,660 +1,790 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RaceOracle VIP — Executive Intelligence Console</title>
-  
-  <!-- Dependencies -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-  <script src="https://unpkg.com/framer-motion@11/dist/framer-motion.js"></script>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RaceOracle — Elite Race Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://unpkg.com/framer-motion@11/dist/framer-motion.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #FAFAF8;
+  --bg2:      #FFFFFF;
+  --bg3:      #F5F3EE;
+  --bg4:      #EDE9E0;
+  --gold:     #B8860B;
+  --gold2:    #C9A84C;
+  --gold3:    #E8C96A;
+  --goldLight:#FFF8E7;
+  --crimson:  #8B1A2E;
+  --crimson2: #C02040;
+  --crimsonLight:#FFF0F2;
+  --emerald:  #1A6B3C;
+  --emerald2: #27A85F;
+  --emeraldLight:#F0FFF6;
+  --text:     #1A1612;
+  --text2:    #5C4F3A;
+  --text3:    #9C8B70;
+  --border:   #E8E0D0;
+  --borderH:  #C9A84C;
+  --shadow:   0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadowHov:0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  background:#FAFAF8;
+  color:var(--text);
+}
 
-  <style>
-    :root {
-      --bg-base:      #060709;
-      --bg-surface:   #0F1115;
-      --bg-card:      #151922;
-      --bg-elevated:  #1D222F;
-      
-      /* Premium Metallic Accents */
-      --gold-primary: #D4AF37;
-      --gold-dark:    #AA771C;
-      --gold-light:   #F3E5AB;
-      --gold-glow:    rgba(212, 175, 55, 0.15);
-      
-      /* Pure UI Indicators */
-      --neon-emerald: #00E676;
-      --neon-crimson: #FF1744;
-      --neon-amber:   #FF9100;
-      
-      /* Typography & Borders */
-      --text-primary: #F5F6F8;
-      --text-muted:   #8E9AA8;
-      --text-dark:    #4A5568;
-      --border-thin:  rgba(255, 255, 255, 0.06);
-      --border-gold:  rgba(212, 175, 55, 0.3);
-      
-      --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
+/* Background image with very light overlay */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url('./src/images/horses.webp');
+  background-size:cover;background-position:center 35%;background-repeat:no-repeat;
+  opacity:0.18;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(250,250,248,0.82) 0%,
+    rgba(250,250,248,0.65) 40%,
+    rgba(250,250,248,0.82) 100%);
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
+/* Racing stripe */
+@keyframes stripeMove{from{background-position:0 0}to{background-position:80px 0}}
+.racing-stripe{
+  height:3px;position:relative;z-index:10;
+  background:repeating-linear-gradient(90deg,
+    var(--gold) 0,var(--gold) 20px,transparent 20px,transparent 40px,
+    var(--crimson2) 40px,var(--crimson2) 60px,transparent 60px,transparent 80px);
+  animation:stripeMove 1.2s linear infinite;
+}
 
-    /* Subtle high-roller ambient depth styling */
-    body::before {
-      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle at 50% -20%, var(--gold-glow) 0%, transparent 60%);
-    }
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.92);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;display:flex;align-items:center;justify-content:space-between;
+  height:72px;backdrop-filter:blur(16px);
+  box-shadow:0 1px 12px rgba(0,0,0,0.06);
+}
+.logo-wrap{display:flex;align-items:center;gap:16px;}
+.logo-mark{width:52px;height:52px;flex-shrink:0;}
+.logo-text{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;letter-spacing:0.3px;color:var(--gold);}
+.logo-text span{color:var(--crimson2);}
+.logo-tagline{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
 
-    /* Kinetic Technical Accent Striping */
-    @keyframes stripMove { from { background-position: 0 0 } to { background-position: 60px 0 } }
-    .racing-stripe {
-      height: 4px; position: relative; z-index: 100;
-      background: repeating-linear-gradient(90deg,
-        var(--gold-dark) 0, var(--gold-dark) 15px, 
-        transparent 15px, transparent 30px,
-        #111 30px, #111 45px, 
-        transparent 45px, transparent 60px);
-      animation: stripeMove 2s linear infinite;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
 
-    /* Executive Top Navigation */
-    .topbar {
-      position: sticky; top: 0; z-index: 99;
-      background: rgba(15, 17, 21, 0.85);
-      border-bottom: 1px solid var(--border-thin);
-      padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
-      height: 80px; backdrop-filter: blur(20px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-    .logo-wrap { display: flex; align-items: center; gap: 16px; }
-    .logo-badge {
-      width: 44px; height: 44px; 
-      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      font-size: 20px; box-shadow: 0 4px 15px rgba(214,175,55,0.3);
-    }
-    .logo-text { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--text-primary); }
-    .logo-text span { color: var(--gold-primary); }
-    .logo-tagline { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; font-weight: 600; }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
+.btn-gold{padding:10px 22px;border-radius:7px;background:linear-gradient(135deg,var(--gold2) 0%,var(--gold) 100%);color:#fff;font-weight:600;font-size:13px;border:none;cursor:pointer;letter-spacing:0.02em;font-family:'Inter',sans-serif;box-shadow:0 2px 8px rgba(184,134,11,0.25);}
+.btn-gold:hover:not(:disabled){background:linear-gradient(135deg,var(--gold3) 0%,var(--gold2) 100%);box-shadow:0 4px 16px rgba(184,134,11,0.3);}
+.btn-gold:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-ghost{padding:10px 16px;border-radius:7px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-ghost:hover{background:var(--bg4);color:var(--text);}
 
-    /* Buttons */
-    .btn-gold {
-      padding: 12px 28px; border-radius: 6px; 
-      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
-      color: #000; font-weight: 700; font-size: 13px; border: none; cursor: pointer;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      box-shadow: 0 4px 20px rgba(212,175,55,0.2); transition: all 0.2s ease;
-    }
-    .btn-gold:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(212,175,55,0.4);
-      filter: brightness(1.1);
-    }
-    .btn-ghost {
-      padding: 12px 20px; border-radius: 6px; background: rgba(255,255,255,0.03);
-      color: var(--text-primary); border: 1px solid var(--border-thin); font-size: 13px;
-      cursor: pointer; font-weight: 500; transition: all 0.2s;
-    }
-    .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: var(--text-muted); }
+/* Layout */
+.layout{display:flex;position:relative;z-index:1;min-height:calc(100vh - 72px);}
 
-    /* Grid Workspace */
-    .layout { display: flex; min-height: calc(100vh - 84px); position: relative; z-index: 1; }
-    
-    /* Sidebar Scheduler */
-    .sidebar { 
-      width: 280px; flex-shrink: 0; background: var(--bg-surface); 
-      border-right: 1px solid var(--border-thin); padding: 32px 0;
-    }
-    .s-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); padding: 0 24px 14px; font-weight: 700; }
-    .race-item { padding: 16px 24px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.2s; }
-    .race-item:hover { background: rgba(255,255,255,0.02); }
-    .race-item.active { background: rgba(212,175,55,0.05); border-left-color: var(--gold-primary); }
-    .ri-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--text-primary); margin-bottom: 4px; font-weight: 700; }
-    .ri-meta { font-size: 12px; color: var(--text-muted); }
-    .ri-badge { display: inline-block; margin-top: 8px; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; background: rgba(212,175,55,0.1); color: var(--gold-primary); border: 1px solid var(--border-gold); font-weight: 700; }
-    
-    .divider { height: 1px; margin: 24px; background: var(--border-thin); }
-    .s-hint { padding: 0 24px; font-size: 12px; color: var(--text-dark); line-height: 1.6; }
-    .s-hint code { color: var(--gold-primary); font-family: monospace; }
+/* Sidebar */
+.sidebar{width:262px;flex-shrink:0;background:rgba(255,255,255,0.85);border-right:1px solid var(--border);padding:24px 0;backdrop-filter:blur(8px);}
+.s-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);padding:0 20px 10px;font-weight:600;}
+.race-item{padding:12px 20px;cursor:pointer;border-left:2px solid transparent;transition:all 0.15s;}
+.race-item:hover{background:var(--goldLight);border-left-color:var(--gold3);}
+.race-item.active{background:var(--goldLight);border-left-color:var(--gold2);}
+.ri-name{font-family:'Playfair Display',serif;font-size:14px;color:var(--text);margin-bottom:3px;font-weight:600;}
+.ri-meta{font-size:11px;color:var(--text3);}
+.ri-badge{display:inline-block;margin-top:6px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--goldLight);color:var(--gold);border:1px solid #E8D49A;font-weight:600;}
+.divider{height:1px;margin:16px 20px;background:var(--border);}
+.s-hint{padding:12px 20px;font-size:11px;color:var(--text3);line-height:1.7;}
+.s-hint code{color:var(--gold);font-size:10px;font-weight:600;}
 
-    /* Main Console Viewport */
-    .main { flex: 1; padding: 40px; overflow-y: auto; }
-    .sec-lbl { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-    .sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border-thin); }
+/* Main */
+.main{flex:1;padding:28px 36px;overflow-y:auto;}
+.sec-lbl{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:600;}
 
-    /* Performance Metrics */
-    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
-    .metric {
-      background: var(--bg-card); border: 1px solid var(--border-thin); border-radius: 8px; padding: 24px;
-      position: relative; overflow: hidden; box-shadow: var(--shadow-premium);
-    }
-    .metric::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold-dark); }
-    .m-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
-    .m-val { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: var(--gold-primary); }
-    .m-val.sm { font-size: 16px; font-family: 'Inter', sans-serif; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
-    .m-sub { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.metric{
+  background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow 0.2s,transform 0.2s;
+}
+.metric:hover{box-shadow:var(--shadowHov);transform:translateY(-1px);}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold2),var(--crimson2));opacity:0.7;}
+.m-lbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-weight:500;}
+.m-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;color:var(--gold);}
+.m-val.sm{font-size:15px;padding-top:4px;line-height:1.35;color:var(--text);}
+.m-val.green{color:var(--emerald);}
+.m-sub{font-size:11px;color:var(--text3);margin-top:6px;}
 
-    /* Ultra-Luxe Runner Identity Architecture */
-    .horses { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
-    .hcard {
-      background: var(--bg-card); border: 1px solid var(--border-thin); border-radius: 8px;
-      padding: 24px; cursor: pointer; position: relative; overflow: hidden;
-      box-shadow: var(--shadow-premium); transition: border-color 0.25s ease;
-    }
-    .hcard:hover { border-color: rgba(255,255,255,0.15); }
-    .hcard.exp { border-color: var(--gold-primary); }
-    .hcard.tp { background: linear-gradient(145deg, var(--bg-card) 0%, rgba(212,175,55,0.02) 100%); border-color: var(--border-gold); }
-    .tp-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--gold-primary), var(--gold-dark)); }
-    .tp-lbl { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-primary); font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+/* Horse cards */
+.horses{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.hcard{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:18px 22px;cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:box-shadow 0.2s;
+}
+.hcard.exp{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(201,168,76,0.1),var(--shadow);}
+.hcard.tp{border-color:#E8D49A;background:var(--goldLight);}
+.tp-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--gold2),var(--crimson2));border-radius:0;}
+.tp-lbl{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+.hdr{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.hnum{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border:1.5px solid var(--border);color:var(--text3);background:var(--bg3);}
+.hnum.g{background:var(--goldLight);border-color:var(--gold3);color:var(--gold);}
+.hname{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
+.hmeta{font-size:12px;color:var(--text3);margin-top:2px;}
+.badges{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+.badge{font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:0.04em;border:1px solid;white-space:nowrap;}
+.bg{background:var(--goldLight);color:var(--gold);border-color:#E8D49A;}
+.br{background:var(--crimsonLight);color:var(--crimson2);border-color:#FFCCD5;}
+.ba{background:#FFF8F0;color:#B05A00;border-color:#FFD9B3;}
+.bk{background:var(--bg3);color:var(--text3);border-color:var(--border);}
 
-    .hdr { display: flex; align-items: center; gap: 20px; margin-bottom: 18px; }
-    .hnum { width: 36px; height: 36px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; border: 1px solid var(--border-thin); color: var(--text-muted); background: rgba(0,0,0,0.2); }
-    .hnum.g { background: rgba(212,175,55,0.1); border-color: var(--gold-primary); color: var(--gold-primary); }
-    
-    .hname { font-family: 'Cinzel', serif; font-size: 19px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.3px; }
-    .hmeta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    
-    .badges { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
-    .badge { font-size: 10px; padding: 5px 12px; border-radius: 4px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid transparent; white-space: nowrap; }
-    .badge.bg { background: rgba(212,175,55,0.1); color: var(--gold-primary); border-color: var(--border-gold); }
-    .badge.br { background: rgba(255,23,68,0.1); color: var(--neon-crimson); border-color: rgba(255,23,68,0.2); }
-    .badge.ba { background: rgba(255,145,0,0.1); color: var(--neon-amber); border-color: rgba(255,145,0,0.2); }
-    .badge.bk { background: rgba(255,255,255,0.05); color: var(--text-muted); border-color: var(--border-thin); }
+/* Prob bars */
+.prow{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.plbl{font-size:11px;color:var(--text3);width:50px;flex-shrink:0;font-weight:500;}
+.ptrack{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.pfill{height:100%;border-radius:3px;}
+.ppct{font-size:12px;font-weight:700;width:42px;text-align:right;flex-shrink:0;}
 
-    /* Probability Meter Staves */
-    .prow { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
-    .prow:last-child { margin-bottom: 0; }
-    .plbl { font-size: 11px; color: var(--text-muted); width: 56px; flex-shrink: 0; font-weight: 600; letter-spacing: 0.05em; }
-    .ptrack { flex: 1; height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); }
-    .pfill { height: 100%; border-radius: 3px; }
-    .ppct { font-size: 13px; font-weight: 700; width: 48px; text-align: right; flex-shrink: 0; font-family: monospace; }
+/* Expanded details */
+.det{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:20px;overflow:hidden;}
+.dtitle{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600;}
+.srow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.slbl{font-size:11px;color:var(--text2);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.strack{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.sfill{height:100%;border-radius:2px;}
+.sval{font-size:10px;width:36px;text-align:right;font-weight:600;}
+.mws{display:flex;gap:8px;margin-top:8px;}
+.mw{flex:1;border-radius:8px;padding:10px;text-align:center;border:1px solid var(--border);background:var(--bg3);}
+.mwv{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);}
+.mwl{font-size:10px;color:var(--text3);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;}
+.nitem{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;}
+.ndot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ntxt{font-size:12px;color:var(--text2);line-height:1.6;}
+.hhint{font-size:11px;color:var(--text3);margin-top:9px;}
 
-    /* Deep Analysis Drawer (SHAP Panel Fix Applied) */
-    .det { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-thin); display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    .dtitle { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; font-weight: 700; border-bottom: 1px solid var(--border-thin); padding-bottom: 6px; }
-    
-    .srow { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-    .slbl { font-size: 12px; color: var(--text-muted); width: 140px; flex-shrink: 0; text-transform: capitalize; }
-    .strack { flex: 1; height: 5px; background: rgba(0,0,0,0.3); border-radius: 2px; }
-    .sfill { height: 100%; border-radius: 2px; }
-    .sval { font-size: 11px; width: 42px; text-align: right; font-weight: 700; font-family: monospace; }
-    
-    .mws { display: flex; gap: 10px; margin-top: 12px; }
-    .mw { flex: 1; border-radius: 6px; padding: 12px; text-align: center; border: 1px solid var(--border-thin); background: rgba(0,0,0,0.15); }
-    .mwv { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: var(--gold-primary); }
-    .mwl { font-size: 9px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
-    
-    .nitem { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
-    .ndot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
-    .ntxt { font-size: 12px; color: var(--text-primary); line-height: 1.6; }
-    .hhint { font-size: 11px; color: var(--text-dark); margin-top: 14px; text-align: right; letter-spacing: 0.05em; }
+/* News panel */
+.news-evidence-btn{margin-top:12px;width:100%;padding:9px 14px;border-radius:8px;background:var(--bg3);border:1px dashed var(--border);color:var(--gold);font-size:11px;cursor:pointer;letter-spacing:0.04em;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;transition:all 0.15s;}
+.news-evidence-btn:hover{background:var(--goldLight);border-color:var(--gold3);}
+.news-panel{margin-top:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.news-panel-title{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600;}
+.article-item{padding:9px 0;border-bottom:1px solid var(--border);}
+.article-item:last-child{border-bottom:none;}
+.article-source{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.article-date{font-size:9px;color:var(--text3);margin-left:6px;}
+.article-title{font-size:12px;color:var(--text);margin-top:3px;line-height:1.45;font-weight:500;}
+.article-summary{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
+.article-empty{font-size:11px;color:var(--text3);text-align:center;padding:10px 0;}
+.news-loading{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);padding:6px 0;}
+.news-loading-ring{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--gold);}
 
-    /* News Source Extraction Engine Panels */
-    .news-evidence-btn { margin-top: 20px; width: 100%; padding: 12px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border-thin); color: var(--gold-primary); font-size: 12px; cursor: pointer; letter-spacing: 0.05em; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; transition: all 0.2s; }
-    .news-evidence-btn:hover { background: rgba(212,175,55,0.05); border-color: var(--gold-primary); }
-    .news-panel { margin-top: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-thin); border-radius: 6px; padding: 20px; }
-    .news-panel-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; font-weight: 700; }
-    .article-item { padding: 12px 0; border-bottom: 1px solid var(--border-thin); }
-    .article-item:last-child { border-bottom: none; }
-    .article-source { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-primary); font-weight: 700; }
-    .article-date { font-size: 10px; color: var(--text-dark); margin-left: 8px; }
-    .article-title { font-size: 13px; color: var(--text-primary); margin-top: 4px; font-weight: 600; }
-    .article-summary { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.6; }
-    .article-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 16px 0; }
-    
-    /* Institutional Dashboards Panels */
-    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .panel { background: var(--bg-card); border: 1px solid var(--border-thin); border-radius: 8px; padding: 28px; box-shadow: var(--shadow-premium); }
-    .ptitle { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; font-weight: 700; }
-    .arow { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-thin); font-size: 13px; color: var(--text-primary); }
-    .arow:last-child { border-bottom: none; }
-    
-    .frow { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-    .fname { font-size: 13px; font-family: 'Cinzel', serif; color: var(--text-primary); width: 130px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .ftrack { flex: 1; height: 6px; background: rgba(0,0,0,0.4); border-radius: 3px; overflow: hidden; }
-    .ffill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold-dark), var(--gold-primary)); }
-    .fpct { font-size: 13px; font-weight: 700; color: var(--gold-primary); width: 44px; text-align: right; font-family: monospace; }
+/* Bottom panels */
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);}
+.ptitle{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:600;}
+.arow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);}
+.arow:last-child{border-bottom:none;}
+.frow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.fname{font-size:12px;color:var(--text2);width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ftrack{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.ffill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold2),var(--crimson2));}
+.fpct{font-size:12px;font-weight:700;color:var(--gold);width:38px;text-align:right;}
 
-    /* Core Application Indicators */
-    .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; gap: 24px; }
-    .lring { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-thin); border-top-color: var(--gold-primary); }
-    .ltxt { font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold-primary); letter-spacing: 1px; }
-    .ebox { border: 1px solid rgba(255,23,68,0.2); background: rgba(255,23,68,0.05); border-radius: 6px; padding: 16px 20px; font-size: 13px; color: var(--neon-crimson); margin-bottom: 32px; }
+/* Loading */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:20px;}
+.lring{width:48px;height:48px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--gold);}
+.ltxt{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);}
+.ebox{border:1px solid #FFCCD5;background:var(--crimsonLight);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--crimson2);margin-bottom:22px;}
 
-    @media(max-width: 1200px) { .metrics { grid-template-columns: repeat(2,1fr) } .panels { grid-template-columns: 1fr } }
-    @media(max-width: 800px) { .sidebar { display:none } .det { grid-template-columns: 1fr } }
-  </style>
+@media(max-width:1100px){.metrics{grid-template-columns:repeat(2,1fr)}.panels{grid-template-columns:1fr}}
+@media(max-width:800px){.sidebar{display:none}.det{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useRef}=React;
+const {motion,AnimatePresence}=window.Motion??window.framerMotion;
+const BASE="http://localhost:8000/api/v1";
 
-  <div id="root"></div>
+async function apiFetch(path,method="GET",body=null){
+  const res=await fetch(BASE+path,{method,headers:{"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+  if(!res.ok){const e=await res.json().catch(()=>({detail:res.statusText}));throw new Error(e.detail||"API error");}
+  return res.json();
+}
 
-  <script type="text/babel">
-    const { useState, useEffect, useCallback } = React;
-    const { motion, AnimatePresence } = window.Motion ?? window.framerMotion;
-    const BASE = "http://localhost:8000/api/v1";
-
-    async function apiFetch(path, method = "GET", body = null) {
-      const res = await fetch(`${BASE}${path}`, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: body ? JSON.stringify(body) : undefined
-      });
-      if (!res.ok) {
-        const e = await res.json().catch(() => ({ detail: res.statusText }));
-        throw new Error(e.detail || "API error");
-      }
-      return res.json();
-    }
-
-    function ProbBar({ label, pct, color, delay = 0 }) {
-      return (
-        <div className="prow">
-          <span className="plbl">{label}</span>
-          <div className="ptrack">
-            <motion.div className="pfill" style={{ backgroundColor: color }}
-              initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-            />
-          </div>
-          <motion.span className="ppct" style={{ color }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: delay + 0.4 }}
-          >{pct}%</motion.span>
-        </div>
-      );
-    }
-
-    function ShapSection({ drivers = [], risks = [] }) {
-      const all = [...drivers, ...risks];
-      const mx = Math.max(...all.map(d => Math.abs(d.impact)), 1);
-      return (
-        <div>
-          <div className="dtitle">SHAP Explanations — Quantitative Performance Drivers</div>
-          {drivers.slice(0, 4).map((d, i) => (
-            <div className="srow" key={i}>
-              <span className="slbl">{d.feature.replace(/_/g, " ")}</span>
-              <div className="strack">
-                <motion.div className="sfill" style={{ background: "linear-gradient(90deg, #00E676, #66BB6A)" }}
-                  initial={{ width: 0 }} animate={{ width: `${(Math.abs(d.impact) / mx) * 100}%` }} transition={{ duration: 0.6, delay: i * 0.05 }}
-                />
-              </div>
-              <span className="sval" style={{ color: "var(--neon-emerald)" }}>+{d.impact.toFixed(1)}</span>
-            </div>
-          ))}
-          {risks.slice(0, 3).map((r, i) => (
-            <div className="srow" key={i}>
-              <span className="slbl">{r.feature.replace(/_/g, " ")}</span>
-              <div className="strack">
-                <motion.div className="sfill" style={{ background: "linear-gradient(90deg, #FF1744, #FF5252)" }}
-                  initial={{ width: 0 }} animate={{ width: `${(Math.abs(r.impact) / mx) * 100}%` }} transition={{ duration: 0.6, delay: i * 0.05 }}
-                />
-              </div>
-              <span className="sval" style={{ color: "var(--neon-crimson)" }}>{r.impact.toFixed(1)}</span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    function NewsEvidence({ horseName, trainerName }) {
-      const [open, setOpen] = useState(false);
-      const [loading, setLoading] = useState(false);
-      const [data, setData] = useState(null);
-      const [err, setErr] = useState(null);
-
-      const fetchEvidence = async (e) => {
-        e.stopPropagation();
-        if (open) { setOpen(false); return; }
-        setOpen(true);
-        if (data) return;
-        setLoading(true); setErr(null);
-        try {
-          const res = await apiFetch("/news", "POST", { horse_name: horseName, trainer_name: trainerName || "", race_info: "upcoming race", use_cache: true });
-          setData(res);
-        } catch (ex) { setErr(ex.message); }
-        finally { setLoading(false); }
-      };
-
-      return (
-        <div onClick={e => e.stopPropagation()}>
-          <button className="news-evidence-btn" onClick={fetchEvidence}>
-            {open ? "▲ Conceal Real-Time Intelligence Sources" : "▼ Extract Unstructured Media & News Evidence"}
-          </button>
-          <AnimatePresence>
-            {open && (
-              <motion.div className="news-panel"
-                initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="news-panel-title">📰 Cross-Referenced Global Media Signals</div>
-                {loading && (
-                  <div className="news-loading">
-                    <motion.div className="news-loading-ring" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}/>
-                    Synthesizing current market data points...
-                  </div>
-                )}
-                {err && <div className="article-empty" style={{ color: "var(--neon-crimson)" }}>⚠ {err}</div>}
-                {data && data.articles && data.articles.length > 0 && data.articles.map((a, i) => (
-                  <div className="article-item" key={i}>
-                    <span className="article-source">{a.source}</span>
-                    <span className="article-date">{a.published}</span>
-                    <div className="article-title">{a.title}</div>
-                    {a.summary && <div className="article-summary">{a.summary}</div>}
-                  </div>
-                ))}
-                {data && (!data.articles || data.articles.length === 0) && (
-                  <div className="article-empty">No active semantic flags detected in historical vectors.</div>
-                )}
-                {data && (
-                  <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border-thin)", fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>
-                    <strong style={{ color: "var(--gold-primary)" }}>AI Synthesis Engine Summary: </strong>{data.summary}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      );
-    }
-
-    function useHorsePhoto(name) {
-      const [url, setUrl] = useState(null);
-      const [loading, setLoading] = useState(true);
-      useEffect(() => {
-        if (!name) return;
-        setLoading(true); setUrl(null);
-        fetch('https://en.wikipedia.org/w/api.php?action=query&titles=' + encodeURIComponent(name) + '&prop=pageimages&format=json&pithumbsize=300&origin=*')
-          .then(r => r.json())
-          .then(d => {
-            const p = Object.values(d?.query?.pages || {})[0];
-            if (p?.thumbnail?.source) { setUrl(p.thumbnail.source); return; }
-            return fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(name + ' racehorse') + '&format=json&origin=*')
-              .then(r => r.json())
-              .then(d2 => {
-                const t = (d2?.query?.search || [])[0]?.title;
-                if (!t) return;
-                return fetch('https://en.wikipedia.org/w/api.php?action=query&titles=' + encodeURIComponent(t) + '&prop=pageimages&format=json&pithumbsize=300&origin=*')
-                  .then(r => r.json())
-                  .then(d3 => {
-                    const p2 = Object.values(d3?.query?.pages || {})[0];
-                    if (p2?.thumbnail?.source) setUrl(p2.thumbnail.source);
-                  });
+/* ── Real horse photo via Wikipedia ──────────────────────────────────────── */
+function useHorsePhoto(name){
+  const [url,setUrl]=useState(null);
+  useEffect(()=>{
+    if(!name)return;
+    setUrl(null);
+    fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(name)+'&prop=pageimages&format=json&pithumbsize=400&origin=*')
+      .then(r=>r.json()).then(d=>{
+        const p=Object.values(d?.query?.pages||{})[0];
+        if(p?.thumbnail?.source){setUrl(p.thumbnail.source);return;}
+        return fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(name+' racehorse')+'&format=json&origin=*')
+          .then(r=>r.json()).then(d2=>{
+            const t=(d2?.query?.search||[])[0]?.title;
+            if(!t)return;
+            return fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(t)+'&prop=pageimages&format=json&pithumbsize=400&origin=*')
+              .then(r=>r.json()).then(d3=>{
+                const p2=Object.values(d3?.query?.pages||{})[0];
+                if(p2?.thumbnail?.source)setUrl(p2.thumbnail.source);
               });
-          })
-          .catch(() => {})
-          .finally(() => setLoading(false));
-      }, [name]);
-      return { url, loading };
-    }
+          });
+      }).catch(()=>{});
+  },[name]);
+  return url;
+}
 
-    function HorsePhoto({ name }) {
-      const { url, loading } = useHorsePhoto(name);
-      return (
-        <div style={{
-          width: 90, height: 90, flexShrink: 0, borderRadius: 6, overflow: 'hidden',
-          border: '1px solid var(--border-thin)', background: 'rgba(0,0,0,0.3)',
-          position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>
-          {loading && (
-            <motion.div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--gold-primary)' }}
-              animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}/>
-          )}
-          {url && (
-            <img src={url} alt={name}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={e => { e.target.style.display = 'none'; }}
-            />
-          )}
-          {!loading && !url && (
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 24 }}>🐎</div>
-            </div>
-          )}
+/* Colour palette for placeholder silhouettes — cycles per horse index */
+const HORSE_COLORS=[
+  ['#8B4513','#D2691E'],['#1a1a1a','#444'],['#C0C0C0','#999'],
+  ['#8B0000','#CC3333'],['#2F4F4F','#4A7A7A'],['#4B0082','#7B52AB'],
+];
+
+function HorsePhoto({name,index=0}){
+  const url=useHorsePhoto(name);
+  const [failed,setFailed]=useState(false);
+  const [darkBg,lightBg]=HORSE_COLORS[index%HORSE_COLORS.length];
+
+  return(
+    <div style={{width:100,height:100,flexShrink:0,borderRadius:10,overflow:'hidden',
+      border:'1px solid var(--border)',position:'relative',
+      background:url&&!failed?'var(--bg3)':darkBg,
+      display:'flex',alignItems:'center',justifyContent:'center'}}>
+      {url&&!failed?(
+        <motion.img src={url} alt={name}
+          initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.4}}
+          style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}
+          onError={()=>setFailed(true)}
+        />
+      ):(
+        /* Elegant placeholder with horse silhouette SVG */
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width:'100%',height:'100%',
+          background:`linear-gradient(135deg,${darkBg} 0%,${lightBg} 100%)`}}>
+          <svg width="56" height="48" viewBox="0 0 100 86" fill="none">
+            <path fill="rgba(255,255,255,0.85)" d="M20 62C16 56 18 48 25 45C32 42 42 43 48 48L54 42C50 34 52 24 60 19C66 15 74 16 78 21C81 25 80 30 76 33L80 37C84 35 88 37 89 41C90 45 87 49 83 49L78 54C76 60 70 64 63 63L57 68C60 74 57 80 51 82C46 84 41 81 40 76L32 80C30 85 24 87 19 84C16 82 15 78 17 75L12 72C8 74 4 72 3 68C2 64 5 60 9 60Z"/>
+            <path fill="rgba(255,255,255,0.6)" d="M62 14Q70 8 74 14Q68 15 64 20Q60 16 62 14Z"/>
+            <path stroke="rgba(255,255,255,0.7)" strokeWidth="3.5" strokeLinecap="round" d="M50 74Q46 83 42 92M40 77Q36 86 34 94M14 70Q18 79 20 88M8 67Q10 77 8 86"/>
+          </svg>
+          <div style={{fontSize:9,color:'rgba(255,255,255,0.8)',fontWeight:700,
+            letterSpacing:'0.1em',textTransform:'uppercase',marginTop:3,textAlign:'center',padding:'0 4px',lineHeight:1.2}}>
+            {name.length>12?name.split(' ')[0]:name}
+          </div>
         </div>
-      );
-    }
+      )}
+      {/* Name overlay when real photo is shown */}
+      {url&&!failed&&(
+        <div style={{position:'absolute',bottom:0,left:0,right:0,
+          background:'linear-gradient(transparent,rgba(0,0,0,0.65))',
+          padding:'14px 6px 4px',pointerEvents:'none'}}>
+          <span style={{fontSize:9,color:'#fff',fontWeight:700,letterSpacing:'0.06em',textTransform:'uppercase'}}>
+            {name.split(' ')[0]}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
 
-    // High-Stakes Analytics Display Architecture
-    function HorseCard({ horse, expanded, onToggle, index }) {
-      const isTop = horse.rank === 1;
-      const wc = horse.win_prob >= 28 ? "var(--neon-emerald)" : horse.win_prob >= 18 ? "var(--gold-primary)" : "var(--text-muted)";
-      return (
-        <motion.div className={`hcard ${expanded ? "exp" : ""} ${isTop ? "tp" : ""}`} onClick={onToggle}
-          layout
-          initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ y: -2 }}
-        >
-          {isTop && <div className="tp-bar"/>}
-          {isTop && <div className="tp-lbl"><span>★</span> Institutional Top Alpha Selection</div>}
-          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-            <HorsePhoto name={horse.name}/>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="hdr">
-                <motion.div className={`hnum ${isTop ? "g" : ""}`}
-                  initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: index * 0.06 + 0.1, type: "spring", stiffness: 300 }}
-                >{horse.rank}</motion.div>
-                <div style={{ flex: 1 }}>
-                  <div className="hname">{horse.name}</div>
-                  <div className="hmeta">Jockey: {horse.jockey} · Trainer: {horse.trainer} · Historical Forms: {horse.form}</div>
-                </div>
-                <div className="badges">
-                  {isTop && <span className="badge bg">Top Selection</span>}
-                  {horse.risk_flags?.filter(f => f.severity === "critical" || f.severity === "high").map((f, i) => (
-                    <span key={i} className={`badge ${f.severity === "critical" ? "br" : "ba"}`}>
-                      {f.label.replace(/[🔴🟡🟠⚪]/g, "").trim()}
-                    </span>
-                  ))}
-                  <span className="badge bk">{horse.confidence}% Confidence Vector</span>
-                </div>
+/* ── Probability bar ─────────────────────────────────────────────────────── */
+function ProbBar({label,pct,color,delay=0}){
+  return(
+    <div className="prow">
+      <span className="p-lbl">{label}</span>
+      <div className="p-track">
+        <motion.div className="p-fill" style={{background:color}}
+          initial={{width:0}} animate={{width:pct+'%'}}
+          transition={{duration:0.9,delay,ease:[0.22,1,0.36,1]}}/>
+      </div>
+      <motion.span className="p-pct" style={{color}}
+        initial={{opacity:0}} animate={{opacity:1}} transition={{delay:delay+0.4}}
+      >{pct}%</motion.span>
+    </div>
+  );
+}
+
+/* ── SHAP chart ──────────────────────────────────────────────────────────── */
+function ShapSection({drivers=[],risks=[]}){
+  const all=[...drivers,...risks];
+  const mx=Math.max(...all.map(d=>Math.abs(d.impact)),1);
+  return(
+    <div>
+      <div className="d-title">SHAP — probability drivers</div>
+      {drivers.slice(0,4).map((d,i)=>(
+        <div className="s-row" key={i}>
+          <span className="s-lbl2">{d.feature.replace(/_/g,' ')}</span>
+          <div className="s-track">
+            <motion.div className="s-fill" style={{background:'linear-gradient(90deg,#1A6B3C,#52D98A)'}}
+              initial={{width:0}} animate={{width:((Math.abs(d.impact)/mx)*100)+'%'}} transition={{duration:0.6,delay:i*0.05}}/>
+          </div>
+          <span className="s-val" style={{color:'#1A6B3C'}}>+{d.impact.toFixed(1)}</span>
+        </div>
+      ))}
+      {risks.slice(0,3).map((r,i)=>(
+        <div className="s-row" key={i}>
+          <span className="s-lbl2">{r.feature.replace(/_/g,' ')}</span>
+          <div className="s-track">
+            <motion.div className="s-fill" style={{background:'linear-gradient(90deg,#C02040,#FF6080)'}}
+              initial={{width:0}} animate={{width:((Math.abs(r.impact)/mx)*100)+'%'}} transition={{duration:0.6,delay:i*0.05}}/>
+          </div>
+          <span className="s-val" style={{color:'#C02040'}}>{r.impact.toFixed(1)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── News evidence panel ─────────────────────────────────────────────────── */
+function NewsEvidence({horseName,trainerName}){
+  const [open,setOpen]=useState(false);
+  const [loading,setLoading]=useState(false);
+  const [data,setData]=useState(null);
+  const [err,setErr]=useState(null);
+
+  const toggle=async(e)=>{
+    e.stopPropagation();
+    if(open){setOpen(false);return;}
+    setOpen(true);
+    if(data)return;
+    setLoading(true);setErr(null);
+    try{
+      const res=await apiFetch('/news','POST',{horse_name:horseName,trainer_name:trainerName||'',race_info:'upcoming race',use_cache:true});
+      setData(res);
+    }catch(ex){setErr(ex.message);}
+    finally{setLoading(false);}
+  };
+
+  return(
+    <div onClick={e=>e.stopPropagation()}>
+      <button className="news-btn" onClick={toggle}>
+        {open?'▲ Hide source articles':'▼ View news evidence & sources'}
+      </button>
+      <AnimatePresence>
+        {open&&(
+          <motion.div className="news-panel"
+            initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}}
+            transition={{duration:0.25}} style={{overflow:'hidden'}}>
+            <div className="np-title">📰 Source articles analysed by AI</div>
+            {loading&&(
+              <div style={{display:'flex',alignItems:'center',gap:8,fontSize:11,color:'var(--text3)',padding:'6px 0'}}>
+                <motion.div style={{width:12,height:12,borderRadius:'50%',border:'2px solid var(--border)',borderTopColor:'var(--gold2)'}}
+                  animate={{rotate:360}} transition={{duration:0.8,repeat:Infinity,ease:'linear'}}/>
+                Fetching articles…
               </div>
-              <ProbBar label="Win Alpha" pct={horse.win_prob} color={wc} delay={index * 0.06}/>
-              <ProbBar label="Tier 2 (P)" pct={horse.top2_prob} color="var(--gold-primary)" delay={index * 0.06 + 0.1}/>
-              <ProbBar label="Tier 3 (P)" pct={horse.top3_prob} color="var(--gold-dark)" delay={index * 0.06 + 0.2}/>
+            )}
+            {err&&<div style={{fontSize:11,color:'var(--crimson2)',padding:'6px 0'}}>⚠ {err}</div>}
+            {data&&(data.articles||[]).map((a,i)=>(
+              <div className="art" key={i}>
+                <span className="art-src">{a.source}</span>
+                <span className="art-date"> · {a.published?.slice(0,16)}</span>
+                <div className="art-title">{a.title}</div>
+                {a.summary&&<div className="art-body">{a.summary}</div>}
+              </div>
+            ))}
+            {data&&!(data.articles||[]).length&&<div className="art-empty">No recent articles found.</div>}
+            {data&&<div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)',fontSize:11,color:'var(--text2)',lineHeight:1.6}}>
+              <strong style={{color:'var(--gold)'}}>AI summary: </strong>{data.summary}
+            </div>}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Horse card ──────────────────────────────────────────────────────────── */
+function HorseCard({horse,expanded,onToggle,index}){
+  const isTop=horse.rank===1;
+  const wc=horse.win_prob>=28?'var(--emerald2)':horse.win_prob>=18?'#B05A00':'var(--text3)';
+  return(
+    <motion.div className={`hcard ${expanded?'exp':''} ${isTop?'top':''}`} onClick={onToggle}
+      layout
+      initial={{opacity:0,y:14}} animate={{opacity:1,y:0}}
+      transition={{duration:0.35,delay:index*0.06,ease:[0.22,1,0.36,1]}}
+      whileHover={{y:-2,boxShadow:'var(--shadowH)'}} whileTap={{scale:0.998}}
+    >
+      {isTop&&<div className="tp-bar"/>}
+      {isTop&&<div className="tp-lbl">★ AI Top Selection</div>}
+
+      {/* Photo + info row */}
+      <div style={{display:'flex',gap:14,alignItems:'flex-start'}}>
+        <HorsePhoto name={horse.name} index={index}/>
+        <div style={{flex:1,minWidth:0}}>
+          <div className="hdr">
+            <motion.div className={`num ${isTop?'g':''}`}
+              initial={{scale:0}} animate={{scale:1}}
+              transition={{delay:index*0.06+0.1,type:'spring',stiffness:300}}
+            >{horse.rank}</motion.div>
+            <div style={{flex:1}}>
+              <div className="h-name">{horse.name}</div>
+              <div className="h-meta">{horse.jockey} · {horse.trainer} · Form: {horse.form}</div>
+            </div>
+            <div className="badges">
+              {isTop&&<span className="badge b-gold">Top pick</span>}
+              {(horse.risk_flags||[]).filter(f=>f.severity==='critical'||f.severity==='high').map((f,i)=>(
+                <span key={i} className={'badge '+(f.severity==='critical'?'b-red':'b-amber')}>
+                  {f.label.replace(/[🔴🟡🟠⚪]/g,'').trim()}
+                </span>
+              ))}
+              <span className="badge b-gray">{horse.confidence}% conf</span>
             </div>
           </div>
-          <AnimatePresence>
-            {expanded && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: "hidden" }}
-              >
-                <div className="det">
-                  <ShapSection drivers={horse.top_drivers || []} risks={horse.top_risks || []}/>
-                  <div>
-                    <div className="dtitle">Multi-modal Weight Distribution</div>
-                    <div className="mws">
-                      {["structured", "odds", "news"].map((k, i) => (
-                        <motion.div className="mw" key={k} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                          <div className="mwv">{horse.modal_weights?.[k] ?? 33}%</div>
-                          <div className="mwl">{k} Tensor</div>
-                        </motion.div>
-                      ))}
-                    </div>
-                    {(horse.risk_flags?.length > 0 || horse.news_summary) && (
-                      <div style={{ marginTop: 20 }}>
-                        <div className="dtitle">Risk Mitigations & Anomalies</div>
-                        {horse.risk_flags?.map((f, i) => (
-                          <div className="nitem" key={i}>
-                            <div className="ndot" style={{ backgroundColor: f.severity === "critical" ? "var(--neon-crimson)" : f.severity === "high" ? "var(--neon-amber)" : "var(--text-muted)" }}/>
-                            <span className="ntxt">{f.label.replace(/[🔴🟡🟠⚪]/g, "").trim()}</span>
-                          </div>
-                        ))}
-                        {horse.news_summary && (
-                          <div className="nitem">
-                            <div className="ndot" style={{ backgroundColor: "var(--text-dark)" }}/>
-                            <span className="ntxt">{horse.news_summary}</span>
-                          </div>
-                        )}
+          <ProbBar label="Win"   pct={horse.win_prob}  color={wc}                    delay={index*0.06}/>
+          <ProbBar label="Top 2" pct={horse.top2_prob} color="var(--gold2)"          delay={index*0.06+0.1}/>
+          <ProbBar label="Top 3" pct={horse.top3_prob} color="var(--gold3)"          delay={index*0.06+0.2}/>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {expanded&&(
+          <motion.div initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}}
+            exit={{height:0,opacity:0}} transition={{duration:0.28,ease:[0.22,1,0.36,1]}}
+            style={{overflow:'hidden'}}>
+            <div className="det">
+              <ShapSection drivers={horse.top_drivers||[]} risks={horse.top_risks||[]}/>
+              <div>
+                <div className="d-title">Signal trust</div>
+                <div className="mw-wrap">
+                  {['structured','odds','news'].map((k,i)=>(
+                    <motion.div className="mw-box" key={k}
+                      initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} transition={{delay:i*0.05}}>
+                      <div className="mw-val">{(horse.modal_weights||{})[k]||33}%</div>
+                      <div className="mw-lbl">{k}</div>
+                    </motion.div>
+                  ))}
+                </div>
+                {((horse.risk_flags||[]).length>0||horse.news_summary)&&(
+                  <div style={{marginTop:14}}>
+                    <div className="d-title">Intelligence flags</div>
+                    {(horse.risk_flags||[]).map((f,i)=>(
+                      <div className="n-item" key={i}>
+                        <div className="n-dot" style={{background:f.severity==='critical'?'var(--crimson2)':f.severity==='high'?'#B05A00':'var(--text3)'}}/>
+                        <span className="n-txt">{f.label.replace(/[🔴🟡🟠⚪]/g,'').trim()}</span>
+                      </div>
+                    ))}
+                    {horse.news_summary&&(
+                      <div className="n-item">
+                        <div className="n-dot" style={{background:'var(--text3)'}}/>
+                        <span className="n-txt">{horse.news_summary}</span>
                       </div>
                     )}
                   </div>
-                </div>
-                <NewsEvidence horseName={horse.name} trainerName={horse.trainer}/>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          {!expanded && <div className="hhint">Expand for complete attribution telemetry, SHAP weights, and media proofs.</div>}
-        </motion.div>
-      );
-    }
-
-    const RACES = [{ id: "demo", label: "Royal Ascot — Gold Cup", meta: "Distance: 1m4f · Track: Good to Firm", badge: "Live Node Instance" }];
-    const ACCURACY = [
-      ["Top Selection Precision", "38.6%", "var(--neon-emerald)"],
-      ["Top-2 Placement Matrix", "~62.0%", "var(--neon-emerald)"],
-      ["Alpha vs Random Baseline", "3.8× Increase", "var(--gold-primary)"],
-      ["Aggregated Training Cycles", "2,706 Historic Runs", "var(--text-primary)"],
-      ["Verification Windows", "Sep–Dec 2020 Data", "var(--text-muted)"],
-      ["Core Engine Artifact", "v1-surgical-deployment", "var(--text-dark)"],
-    ];
-
-    function App() {
-      const [race, setRace] = useState(null);
-      const [loading, setLoading] = useState(false);
-      const [error, setError] = useState(null);
-      const [expanded, setExpanded] = useState(null);
-      const [apiStatus, setApiStatus] = useState("checking");
-      const [activeRace, setActiveRace] = useState("demo");
-
-      const checkHealth = useCallback(async () => {
-        try { const h = await apiFetch("/health"); setApiStatus(h.status === "ok" ? "online" : "degraded"); }
-        catch { setApiStatus("offline"); }
-      }, []);
-
-      const loadDemo = useCallback(async () => {
-        setLoading(true); setError(null); setExpanded(null);
-        try { setRace(await apiFetch("/predict/demo")); }
-        catch (e) { setError(e.message); }
-        finally { setLoading(false); }
-      }, []);
-
-      useEffect(() => { checkHealth(); loadDemo(); }, []);
-
-      const horses = race?.horses ?? [];
-      const maxWin = horses.length ? Math.max(...horses.map(h => h.win_prob)) : 1;
-
-      return (
-        <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
-          <div className="racing-stripe"/>
-          
-          <motion.div className="topbar" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}>
-            <div className="logo-wrap">
-              <div className="logo-badge">👑</div>
-              <div>
-                <div className="logo-text">Race<span>Oracle</span></div>
-                <div className="logo-tagline">VIP Enterprise Platform</div>
+                )}
               </div>
             </div>
-            <div className="topbar-right">
-              <motion.button className="btn-ghost" onClick={loadDemo} disabled={loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                Re-sync Signals
-              </motion.button>
-              <motion.button className="btn-gold" onClick={loadDemo} disabled={loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                {loading ? "Re-weighting Parameters..." : "Compute Predictive Matrix"}
-              </motion.button>
-            </div>
+            <NewsEvidence horseName={horse.name} trainerName={horse.trainer}/>
           </motion.div>
+        )}
+      </AnimatePresence>
+      {!expanded&&<div className="h-hint">Click to expand · SHAP analysis · signal trust · news evidence</div>}
+    </motion.div>
+  );
+}
 
-          <div className="layout">
-            <motion.div className="sidebar" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-              <div className="s-label">Active Betting Schedules</div>
-              {RACES.map(r => (
-                <div key={r.id} className={`race-item ${activeRace === r.id ? "active" : ""}`} onClick={() => { setActiveRace(r.id); loadDemo(); }}>
-                  <div className="ri-name">{r.label}</div>
-                  <div className="ri-meta">{r.meta}</div>
-                  <span className="ri-badge">{r.badge}</span>
+/* ── Quick Predict sidebar component ─────────────────────────────────────── */
+function QuickPredict(){
+  const [horses,setHorses]=useState([{name:'',jockey:'',trainer:'',form:'',age:5,weight_lbs:126}]);
+  const [track,setTrack]=useState('Royal Ascot');
+  const [going,setGoing]=useState('Good');
+  const [result,setResult]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState(null);
+
+  const addHorse=()=>{
+    if(horses.length>=12)return;
+    setHorses(h=>[...h,{name:'',jockey:'',trainer:'',form:'',age:5,weight_lbs:126}]);
+  };
+  const removeHorse=(i)=>setHorses(h=>h.filter((_,j)=>j!==i));
+  const updateHorse=(i,field,val)=>setHorses(h=>h.map((ho,j)=>j===i?{...ho,[field]:val}:ho));
+
+  const run=async()=>{
+    const valid=horses.filter(h=>h.name.trim());
+    if(valid.length<2){setErr('Enter at least 2 horse names');return;}
+    setLoading(true);setErr(null);setResult(null);
+    try{
+      const body={
+        horses:valid.map(h=>({
+          name:h.name.trim(),jockey:h.jockey||'Unknown',trainer:h.trainer||'Unknown',
+          form:h.form||'-',age:Number(h.age)||5,weight_lbs:Number(h.weight_lbs)||126,
+          days_since_last_run:21,jockey_win_rate:0.12,trainer_win_rate:0.12,
+          speed_ratings:[],going_history:[],distance_history:[],
+          track_wins:0,track_runs:1,career_wins:0,career_runs:1,
+        })),
+        race:{race_id:'quick_'+Date.now(),race_name:track+' — Custom Race',
+          track,going,surface:'Turf',distance_furlongs:10},
+        fetch_news:false,
+      };
+      const res=await apiFetch('/predict','POST',body);
+      setResult(res);
+    }catch(ex){setErr(ex.message);}
+    finally{setLoading(false);}
+  };
+
+  return(
+    <div style={{padding:'0 0 8px'}}>
+      <div className="s-label" style={{paddingTop:8}}>Quick Prediction</div>
+      <div style={{padding:'0 14px'}}>
+        {/* Track & Going */}
+        <div style={{marginBottom:8}}>
+          <input value={track} onChange={e=>setTrack(e.target.value)} placeholder="Track name"
+            style={{width:'100%',padding:'7px 10px',borderRadius:6,border:'1px solid var(--border)',
+              background:'var(--bg3)',color:'var(--text)',fontSize:11,fontFamily:'Inter,sans-serif',marginBottom:5}}/>
+          <select value={going} onChange={e=>setGoing(e.target.value)}
+            style={{width:'100%',padding:'7px 10px',borderRadius:6,border:'1px solid var(--border)',
+              background:'var(--bg3)',color:'var(--text)',fontSize:11,fontFamily:'Inter,sans-serif'}}>
+            {['Firm','Good','Good-Soft','Soft','Heavy'].map(g=><option key={g}>{g}</option>)}
+          </select>
+        </div>
+
+        {/* Horse rows */}
+        <div style={{marginBottom:8,maxHeight:220,overflowY:'auto'}}>
+          {horses.map((h,i)=>(
+            <div key={i} style={{display:'flex',gap:5,marginBottom:5,alignItems:'center'}}>
+              <div style={{width:18,height:18,borderRadius:'50%',background:'var(--bg4)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontSize:9,color:'var(--text3)',flexShrink:0,fontWeight:700}}>{i+1}</div>
+              <input value={h.name} onChange={e=>updateHorse(i,'name',e.target.value)}
+                placeholder="Horse name *"
+                style={{flex:1,padding:'6px 8px',borderRadius:6,border:'1px solid var(--border)',
+                  background:'var(--bg2)',color:'var(--text)',fontSize:11,fontFamily:'Inter,sans-serif'}}/>
+              {horses.length>2&&(
+                <button onClick={()=>removeHorse(i)}
+                  style={{width:20,height:20,borderRadius:'50%',border:'1px solid var(--border)',
+                    background:'var(--crimsonL)',color:'var(--crimson2)',cursor:'pointer',
+                    fontSize:11,lineHeight:1,padding:0,flexShrink:0}}>×</button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <button onClick={addHorse} disabled={horses.length>=12}
+          style={{width:'100%',padding:'6px',borderRadius:6,border:'1px dashed var(--border)',
+            background:'var(--bg3)',color:'var(--text3)',fontSize:11,cursor:'pointer',
+            fontFamily:'Inter,sans-serif',marginBottom:8}}>
+          + Add horse
+        </button>
+
+        {err&&<div style={{fontSize:11,color:'var(--crimson2)',marginBottom:6,padding:'5px 8px',
+          background:'var(--crimsonL)',borderRadius:5,border:'1px solid #FFCCD5'}}>{err}</div>}
+
+        <button onClick={run} disabled={loading}
+          style={{width:'100%',padding:'9px',borderRadius:7,border:'none',
+            background:'linear-gradient(135deg,var(--gold2),var(--gold))',
+            color:'#fff',fontWeight:700,fontSize:12,cursor:'pointer',
+            fontFamily:'Inter,sans-serif',letterSpacing:'0.03em',
+            opacity:loading?0.7:1}}>
+          {loading?'Predicting…':'Run Prediction →'}
+        </button>
+
+        {/* Inline results */}
+        <AnimatePresence>
+          {result&&(
+            <motion.div initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0}}
+              style={{marginTop:10,background:'var(--bg3)',borderRadius:8,
+                border:'1px solid var(--border)',padding:'10px 12px'}}>
+              <div style={{fontSize:9,letterSpacing:'0.15em',textTransform:'uppercase',
+                color:'var(--goldDim)',fontWeight:600,marginBottom:8}}>Results</div>
+              {result.horses.map((h,i)=>(
+                <div key={i} style={{display:'flex',alignItems:'center',gap:8,
+                  padding:'5px 0',borderBottom:i<result.horses.length-1?'1px solid var(--border)':'none'}}>
+                  <div style={{width:20,height:20,borderRadius:'50%',flexShrink:0,
+                    background:i===0?'var(--goldL)':'var(--bg4)',
+                    border:'1px solid '+(i===0?'var(--gold3)':'var(--border)'),
+                    display:'flex',alignItems:'center',justifyContent:'center',
+                    fontSize:9,fontWeight:700,color:i===0?'var(--gold)':'var(--text3)'}}>
+                    {h.rank}
+                  </div>
+                  <span style={{flex:1,fontSize:12,fontWeight:i===0?700:400,
+                    color:i===0?'var(--text)':'var(--text2)',
+                    fontFamily:i===0?'Playfair Display,serif':'Inter,sans-serif'}}>
+                    {h.name}
+                  </span>
+                  <span style={{fontSize:12,fontWeight:700,
+                    color:i===0?'var(--emerald2)':'var(--text3)'}}>
+                    {h.win_prob}%
+                  </span>
                 </div>
               ))}
-              <div className="divider"/>
-             {/* <div className="s-hint">System Node Interface: Payload ingest active via endpoint <code>/api/v1/predict</code>.</div>*/}
+              <div style={{marginTop:8,fontSize:10,color:'var(--text3)',textAlign:'center'}}>
+                {result.inference_ms}ms · {result.field_size} runners
+              </div>
             </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
 
-            <div className="main">
-              {error && <div className="ebox">Node Connection Interrupted: {error} — Ensure your microservices cluster is up and running.</div>}
-              {loading && (
-                <div className="loading">
-                  <motion.div className="lring" animate={{ rotate: 360 }} transition={{ duration: 0.9, repeat: Infinity, ease: "linear" }}/>
-                  <motion.div className="ltxt" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                    Running High-Throughput Inference Matrix...
-                  </motion.div>
-                </div>
-              )}
-              
-              {!loading && race && (
-                <>
-                  <div className="sec-lbl">Telemetry Performance Overview</div>
-                  <motion.div className="metrics" initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}>
-                    {[
-                      { l: "Target Event", v: race.race_name, s: `${race.track} · Condition Vector: ${race.going}`, sm: true },
-                      { l: "Max Alpha Yield Option", v: race.top_pick, s: `${race.horses[0]?.win_prob}% Win Vector Target`, sm: true, c: "var(--gold-primary)" },
-                      { l: "System Confidence Profile", v: `${race.model_confidence}%`, s: `Engine Type: ${race.model_version}` },
-                      { l: "Compute Clusters Latency", v: `${race.inference_ms}ms`, s: `Processed ${race.field_size} Distinct Paths` },
-                    ].map((m, i) => (
-                      <motion.div className="metric" key={i} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-                        <div className="m-lbl">{m.l}</div>
-                        <div className={`m-val ${m.sm ? "sm" : ""}`} style={{ color: m.c || undefined }}>{m.v}</div>
-                        <div className="m-sub">{m.s}</div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+const RACES=[{id:'demo',label:'Royal Ascot — Race 3',meta:'1m4f · Good to Firm',badge:'Live Demo'}];
+const ACCURACY=[
+  ['Top-pick accuracy','38.6%','var(--emerald)'],
+  ['Top-2 accuracy','~62%','var(--emerald)'],
+  ['vs random baseline','3.8×','var(--gold)'],
+  ['Training races','2,706','var(--text2)'],
+  ['Dataset period','Sep–Dec 2020','var(--text3)'],
+  ['Model version','v1-surgical','var(--text3)'],
+];
 
-                  <div className="sec-lbl">Proprietary Probability Allocations</div>
-                  <div className="horses">
-                    {horses.map((h, i) => (
-                      <HorseCard key={h.name} horse={h} expanded={expanded === i} onToggle={() => setExpanded(expanded === i ? null : i)} index={i} />
-                    ))}
-                  </div>
+/* ── App ─────────────────────────────────────────────────────────────────── */
+function App(){
+  const [race,setRace]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState(null);
+  const [expanded,setExpanded]=useState(null);
+  const [active,setActive]=useState('demo');
 
-                  <div className="sec-lbl">Enterprise Risk & Calibration Metrics</div>
-                  <motion.div className="panels" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                    <div className="panel">
-                      <div className="ptitle">Back-Tested Model Evaluation Matrix</div>
-                      {ACCURACY.map(([l, v, c]) => (
-                        <div className="arow" key={l}>
-                          <span>{l}</span>
-                          <span style={{ fontWeight: 700, color: c }}>{v}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="panel">
-                      <div className="ptitle">Composite Win Probabilities Breakdown</div>
-                      {horses.map((h, i) => (
-                        <div className="frow" key={h.name}>
-                          <span className="fname">{h.name}</span>
-                          <div className="ftrack">
-                            <motion.div className="ffill" initial={{ width: 0 }} animate={{ width: `${(h.win_prob / maxWin) * 100}%` }} transition={{ duration: 0.8, delay: i * 0.06 }} />
-                          </div>
-                          <span className="fpct">{h.win_prob}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </div>
+  const loadDemo=useCallback(async()=>{
+    setLoading(true);setError(null);setExpanded(null);
+    try{setRace(await apiFetch('/predict/demo'));}
+    catch(e){setError(e.message);}
+    finally{setLoading(false);}
+  },[]);
+
+  useEffect(()=>{loadDemo();},[]);
+
+  const horses=race?.horses??[];
+  const maxWin=horses.length?Math.max(...horses.map(h=>h.win_prob)):1;
+
+  return(
+    <div style={{minHeight:'100vh',position:'relative',zIndex:1}}>
+      <div className="stripe"/>
+
+      {/* Topbar */}
+      <motion.div className="topbar" initial={{y:-20,opacity:0}} animate={{y:0,opacity:1}} transition={{duration:0.4}}>
+        <div className="logo-wrap">
+          <div style={{width:42,height:42,background:'linear-gradient(135deg,#C9A84C,#B8860B)',
+            borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:22,flexShrink:0}}>🏇</div>
+          <div>
+            <div className="logo-text">Race<span>Oracle</span></div>
+            <div className="logo-tag">Elite AI Race Intelligence</div>
           </div>
         </div>
-      );
-    }
+        <div className="nav-right">
+          <motion.button className="btn-secondary" onClick={loadDemo} disabled={loading}
+            whileHover={{scale:1.02}} whileTap={{scale:0.98}}>↺ Refresh</motion.button>
+          <motion.button className="btn-primary" onClick={loadDemo} disabled={loading}
+            whileHover={{scale:1.02,boxShadow:'0 6px 20px rgba(184,134,11,0.3)'}} whileTap={{scale:0.98}}>
+            {loading?'Analysing…':'Run Prediction'}
+          </motion.button>
+        </div>
+      </motion.div>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
-  </script>
+      <div className="layout">
+        {/* Sidebar */}
+        <motion.div className="sidebar" initial={{x:-20,opacity:0}} animate={{x:0,opacity:1}} transition={{delay:0.1}}>
+
+          {/* Race schedule */}
+          <div className="s-label">Race Schedule</div>
+          {RACES.map(r=>(
+            <div key={r.id} className={'r-item'+(active===r.id?' on':'')}
+              onClick={()=>{setActive(r.id);loadDemo();}}>
+              <div className="r-name">{r.label}</div>
+              <div className="r-meta">{r.meta}</div>
+              <span className="r-badge">{r.badge}</span>
+            </div>
+          ))}
+
+          <div className="s-div"/>
+
+          {/* Quick predict form */}
+          <QuickPredict/>
+
+          <div className="s-div"/>
+
+          <div className="s-hint">POST to <code>/api/v1/predict</code> for full race analysis.</div>
+        </motion.div>
+
+        {/* Main content */}
+        <div className="main">
+          {error&&<div className="err-box">⚠ {error} — ensure the API is running: uvicorn backend.api.main:app --port 8000</div>}
+
+          {loading&&(
+            <div className="loading">
+              <motion.div className="l-ring" animate={{rotate:360}} transition={{duration:0.9,repeat:Infinity,ease:'linear'}}/>
+              <motion.div className="l-txt" animate={{opacity:[0.5,1,0.5]}} transition={{duration:1.5,repeat:Infinity}}>
+                Analysing race intelligence…
+              </motion.div>
+            </div>
+          )}
+
+          {!loading&&race&&(<>
+            <div className="sec">Race overview</div>
+            <motion.div className="grid4" initial="h" animate="s"
+              variants={{h:{},s:{transition:{staggerChildren:0.08}}}}>
+              {[
+                {l:'Race',v:race.race_name,s:race.track+' · '+race.going,sm:true},
+                {l:'AI Selection',v:race.top_pick,s:(race.horses[0]?.win_prob)+'% win probability',sm:true,c:'var(--gold)'},
+                {l:'Model Confidence',v:race.model_confidence+'%',s:race.model_version},
+                {l:'Inference',v:race.inference_ms+'ms',s:race.field_size+' runners',cls:'gr'},
+              ].map((m,i)=>(
+                <motion.div className="card" key={i}
+                  variants={{h:{opacity:0,y:12},s:{opacity:1,y:0}}}
+                  whileHover={{y:-2,boxShadow:'var(--shadowH)'}}>
+                  <div className="c-lbl">{m.l}</div>
+                  <div className={'c-val'+(m.sm?' sm':'')+(m.cls?' '+m.cls:'')} style={m.c?{color:m.c}:{}}>{m.v}</div>
+                  <div className="c-sub">{m.s}</div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <div className="sec">Field analysis</div>
+            <div className="horses">
+              {horses.map((h,i)=>(
+                <HorseCard key={h.name} horse={h} expanded={expanded===i}
+                  onToggle={()=>setExpanded(expanded===i?null:i)} index={i}/>
+              ))}
+            </div>
+
+            <div className="sec">Intelligence dashboard</div>
+            <motion.div className="grid2" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{delay:0.3}}>
+              <div className="panel">
+                <div className="p-title">Model performance</div>
+                {ACCURACY.map(([l,v,c])=>(
+                  <div className="a-row" key={l}>
+                    <span>{l}</span>
+                    <span style={{fontWeight:700,color:c}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="panel">
+                <div className="p-title">Win probability — field overview</div>
+                {horses.map((h,i)=>(
+                  <div className="f-row" key={h.name}>
+                    <span className="f-name">{h.name}</span>
+                    <div className="f-track">
+                      <motion.div className="f-fill" initial={{width:0}}
+                        animate={{width:((h.win_prob/maxWin)*100)+'%'}} transition={{duration:0.8,delay:i*0.06}}/>
+                    </div>
+                    <span className="f-pct">{h.win_prob}%</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
 </body>
 </html>
