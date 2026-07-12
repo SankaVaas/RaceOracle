@@ -65,4 +65,4 @@ Copy `.env.example` to `.env` and fill in:
 ## Results
 
 ### Front page
-![alt text](image.png)
+![alt text](results/image.png)
